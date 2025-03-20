@@ -24,3 +24,9 @@ def login():
         session["username"] = user.username 
         return redirect("/")
     return render_template("login.html", msg="invalid username or password")
+
+@app.route("/logout", methods=["POST"])
+def logout():
+    if "username" in session:
+        del session["username"]
+    return redirect("/")

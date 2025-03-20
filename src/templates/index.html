@@ -8,10 +8,14 @@
 	<body>
 		<h1>Snippet Share</h1>
 		<div>
+			{% if username %}
 			<p>Logged in as {{username}}</p>
-			<form action="post">
+			<form method="post" action="/logout">
 				<button>Log Out</button>
 			</form>
+			{% else %}
+			<a href="/login">Log in</a>
+			{% endif %}
 		</div>
 		<h2>Feed</h2>
 		<div>
