@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Create account</title>
+	</head>
+	<body>
+		<h1>Create new account</h1>
+		<form action="/register" method="POST">
+			<label for="username">Username: </label>
+			<input id="username" name="username" type="text" />
+			<br />
+			<label for="password1">Password</label>
+			<input id="password1" name="password1" type="password" />
+			<br />
+			<label for="password2">Retype password</label>
+			<input id="password2" name="password2" type="password" />
+			<br />
+			<button>Create</button>
+		</form>
+		<p>{{msg}}</p>
+	</body>
+</html>
