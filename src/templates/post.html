@@ -8,7 +8,13 @@
 	<body>
 		<h1>Create new post</h1>
 		<form method="POST" action="/post">
-			<input type="text" name="data" id="data" />
+			<textarea
+				name="data"
+				id="data"
+				rows="10"
+				cols="80"
+				maxlength="2000"
+			></textarea>
 			<br />
 			{% for l in languages %}
 			<input

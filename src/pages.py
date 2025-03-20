@@ -13,6 +13,7 @@ app.secret_key = config.secret_key
 @app.template_filter()
 def show_lines(content):
     content = str(markupsafe.escape(content))
+    content = content.replace(" ", "&nbsp")
     content = content.replace("\n", "<br />")
     return markupsafe.Markup(content)
 
