@@ -46,4 +46,16 @@ def register():
     except IntegrityError:
         return render_template("register.html", msg="username already in use")
     return redirect("/")
-    
+
+@app.route("/post", methods=["GET", "POST"])
+def post():
+    if request.method == "GET":
+        languages = Db().get_languages()
+        return render_template("post.html", languages=languages) 
+    if "language" not in request.form:
+        return render_template("post.html", languages=Db().get_languages(), msg="please select a language")
+    language_id = Db().get_language_id(request.form["language"])
+    data = request.form["data"]
+    user_id = Db().get_user_by_username(session["username"]).id
+    Db().create_post(data, language_id, user_id)
+    return redirect("/")

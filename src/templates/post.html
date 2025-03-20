@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>New post</title>
+	</head>
+	<body>
+		<h1>Create new post</h1>
+		<form method="POST" action="/post">
+			<input type="text" name="data" id="data" />
+			<br />
+			{% for l in languages %}
+			<input
+				type="radio"
+				id="language-{{ l }}"
+				name="language"
+				value="{{ l }}"
+			/>
+			<label for="language-{{ l }}">{{ l }}</label>
+			<br />
+			{% endfor %}
+			<button>Submit</button>
+		</form>
+		{% if msg %}
+		<p>{{ msg }}</p>
+		{% endif %}
+	</body>
+</html>

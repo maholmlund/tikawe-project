@@ -6,6 +6,12 @@ class User:
         self.username = username
         self.pwd_hash = pwd_hash
 
+class Post:
+    def __init__(self, data, id, language, user):
+        self.data = data
+        self.language = language
+        self.user = user
+
 class Db:
     def __init__(self):
         self.con = sqlite3.connect("database.db")
@@ -22,3 +28,23 @@ class Db:
         query = """INSERT INTO Users (name, pwd_hash) VALUES (?, ?)"""
         self.con.execute(query, [username, pwd_hash])
         self.con.commit()
+    
+    def create_post(self, data, language_id, user_id):
+        query = """INSERT INTO Posts (data, language, user_id) VALUES (?, ?, ?)"""
+        self.con.execute(query, [data, language_id, user_id])
+        self.con.commit()
+    
+    def get_languages(self):
+        query = """SELECT name FROM Languages"""
+        results = self.con.execute(query).fetchall()
+        if not results:
+            results = []
+        results = map(lambda x: x[0], results)
+        return results
+    
+    def get_language_id(self, name):
+        query = """SELECT id FROM Languages WHERE name = ?"""
+        result = self.con.execute(query, [name]).fetchone()
+        return result[0]
+    
+        
