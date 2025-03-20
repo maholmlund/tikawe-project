@@ -81,3 +81,17 @@ def post():
     user_id = Db().get_user_by_username(session["username"]).id
     Db().create_post(data, language_id, user_id)
     return redirect("/")
+
+@app.route("/edit/<post_id>", methods=["GET", "POST"])
+@login_required
+def edit(post_id):
+    post = Db().get_post_by_id(post_id)
+    if post.username != session["username"]:
+        return "invalid user", 403
+    if request.method == "GET":
+        languages = Db().get_languages()
+        return render_template("edit_post.html", languages=languages, default_lang=post.language, data=post.data)
+    data = request.form["data"]
+    language_id = Db().get_language_id(request.form["language"])
+    Db().update_post_by_id(post_id, data, language_id)
+    return redirect("/")

@@ -28,6 +28,9 @@
 			<p>{{ post.data | show_lines }}</p>
 			<p>Likes: 40</p>
 			<a href="">6 comments</a>
+			{% if username == post.username %}
+			<a href="/edit/{{ post.id }}">Edit</a>
+			{% endif %}
 		</div>
 		{% endfor %}
 	</body>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Edit post</title>
+	</head>
+	<body>
+		<h1>Edit post</h1>
+		<form method="POST" action="#">
+			<textarea name="data" id="data" rows="10" cols="80" maxlength="2000">
+{{ data }}</textarea
+			>
+			<br />
+			{% for l in languages %} <input type="radio" id="language-{{ l }}"
+			name="language" value="{{ l }}" {% if l == default_lang %} checked {%
+			endif %} />
+			<label for="language-{{ l }}">{{ l }}</label>
+			<br />
+			{% endfor %}
+			<button>Update</button>
+		</form>
+		{% if msg %}
+		<p>{{ msg }}</p>
+		{% endif %}
+	</body>
+</html>

@@ -7,10 +7,11 @@ class User:
         self.pwd_hash = pwd_hash
 
 class Post:
-    def __init__(self, data, language, username):
+    def __init__(self, data, language, username, id):
         self.data = data
         self.language = language
         self.username = username
+        self.id = id
 
 class Db:
     def __init__(self):
@@ -48,8 +49,19 @@ class Db:
         return result[0]
     
     def get_posts(self, limit):
-        query = """SELECT P.data, L.name, U.name FROM Posts P, Users U, Languages L WHERE U.id = P.user_id AND L.id = P.language LIMIT ?"""
+        query = """SELECT P.data, L.name, U.name, P.id FROM Posts P, Users U, Languages L WHERE U.id = P.user_id AND L.id = P.language LIMIT ?"""
         results = self.con.execute(query, [limit]).fetchall()
-        results = [Post(x[0], x[1], x[2]) for x in results]
+        results = [Post(x[0], x[1], x[2], x[3]) for x in results]
         return results
         
+    def get_post_by_id(self, id):
+        query = """SELECT P.data, L.name, U.name, P.id FROM Posts P, Languages L, Users U WHERE L.id = P.language AND U.id = P.user_id AND P.id = ?"""
+        results = self.con.execute(query, [id]).fetchone()
+        if results:
+            return Post(results[0], results[1], results[2], results[3])
+        return None
+    
+    def update_post_by_id(self, id, data, language_id):
+        query = """UPDATE Posts SET data = ?, language = ? WHERE id = ?"""
+        self.con.execute(query, [data, language_id, id])
+        self.con.commit()
