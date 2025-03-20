@@ -20,11 +20,15 @@
 			{% endif %}
 		</div>
 		<h2>Feed</h2>
+		<hr />
+		{% for post in posts %}
 		<div>
-			<p>Testiuser</p>
-			<p>Some code snippet here...</p>
+			<p>{{ post.username }}</p>
+			<p>{{ post.language }}</p>
+			<p>{{ post.data | show_lines }}</p>
 			<p>Likes: 40</p>
 			<a href="">6 comments</a>
 		</div>
+		{% endfor %}
 	</body>
 </html>

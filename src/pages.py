@@ -4,15 +4,24 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from db import Db
 from sqlite3 import IntegrityError
 import config
+import markupsafe
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
 
+
+@app.template_filter()
+def show_lines(content):
+    content = str(markupsafe.escape(content))
+    content = content.replace("\n", "<br />")
+    return markupsafe.Markup(content)
+
 @app.route("/")
 def index():
+    posts = Db().get_posts(20)
     if "username" in session:
-        return render_template("index.html", username=session["username"])
-    return render_template("index.html")
+        return render_template("index.html", posts=posts, username=session["username"])
+    return render_template("index.html", posts=posts)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():

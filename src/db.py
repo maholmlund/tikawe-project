@@ -7,10 +7,10 @@ class User:
         self.pwd_hash = pwd_hash
 
 class Post:
-    def __init__(self, data, id, language, user):
+    def __init__(self, data, language, username):
         self.data = data
         self.language = language
-        self.user = user
+        self.username = username
 
 class Db:
     def __init__(self):
@@ -47,4 +47,9 @@ class Db:
         result = self.con.execute(query, [name]).fetchone()
         return result[0]
     
+    def get_posts(self, limit):
+        query = """SELECT P.data, L.name, U.name FROM Posts P, Users U, Languages L WHERE U.id = P.user_id AND L.id = P.language LIMIT ?"""
+        results = self.con.execute(query, [limit]).fetchall()
+        results = [Post(x[0], x[1], x[2]) for x in results]
+        return results
         
