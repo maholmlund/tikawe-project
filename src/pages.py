@@ -1,8 +1,9 @@
 from flask import Flask, request, redirect, session
-from flask import render_template
+from flask import render_template, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
 from db import Db
 from sqlite3 import IntegrityError
+from functools import wraps
 import config
 import markupsafe
 
@@ -17,6 +18,14 @@ def show_lines(content):
     content = content.replace("\n", "<br />")
     return markupsafe.Markup(content)
 
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if "username" not in session:
+            return redirect(url_for('login', next=request.path))
+        return f(*args, **kwargs)
+    return decorated_function
+
 @app.route("/")
 def index():
     posts = Db().get_posts(20)
@@ -27,12 +36,14 @@ def index():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
-        return render_template("login.html")
+        return render_template("login.html", next=request.args.get("next"))
     username = request.form["username"]
     pwd = request.form["pwd"]
     user = Db().get_user_by_username(username)
     if user and check_password_hash(user.pwd_hash, pwd):
         session["username"] = user.username 
+        if request.form["next"] != "":
+                return redirect(request.form["next"])
         return redirect("/")
     return render_template("login.html", msg="invalid username or password")
 
@@ -58,6 +69,7 @@ def register():
     return redirect("/")
 
 @app.route("/post", methods=["GET", "POST"])
+@login_required
 def post():
     if request.method == "GET":
         languages = Db().get_languages()
