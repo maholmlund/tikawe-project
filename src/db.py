@@ -14,7 +14,9 @@ class Db:
     def get_user_by_username(self, username):
         query = """SELECT * FROM Users WHERE name=?"""
         values = self.con.execute(query, [username]).fetchone()
-        return User(values[1], values[2], values[0])
+        if values:
+            return User(values[1], values[2], values[0])
+        return None
 
     def create_user(self, username, pwd_hash):
         query = """INSERT INTO Users (name, pwd_hash) VALUES (?, ?)"""
