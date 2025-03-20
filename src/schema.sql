@@ -1,6 +1,6 @@
 CREATE TABLE Users (
         id INTEGER PRIMARY KEY,
-        name TEXT,
+        name TEXT UNIQUE,
         pwd_hash TEXT,
 );
 
@@ -13,7 +13,7 @@ CREATE TABLE Posts (
 
 CREATE TABLE Languages (
         id INTEGER PRIMARY KEY,
-        name TEXT,
+        name TEXT UNIQUE,
 )
 
 CREATE TABLE Likes (
