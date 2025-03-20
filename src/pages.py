@@ -95,3 +95,12 @@ def edit(post_id):
     language_id = Db().get_language_id(request.form["language"])
     Db().update_post_by_id(post_id, data, language_id)
     return redirect("/")
+
+@app.route("/delete/<post_id>", methods=["POST"])
+@login_required
+def delete(post_id):
+    post = Db().get_post_by_id(post_id)
+    if post.username != session["username"]:
+        return "invalid user", 403
+    Db().delete_post_by_id(post_id)
+    return redirect("/")

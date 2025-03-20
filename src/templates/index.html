@@ -30,6 +30,9 @@
 			<a href="">6 comments</a>
 			{% if username == post.username %}
 			<a href="/edit/{{ post.id }}">Edit</a>
+			<form method="POST" action="/delete/{{ post.id }}">
+				<button>Delte</button>
+			</form>
 			{% endif %}
 		</div>
 		{% endfor %}

@@ -65,3 +65,8 @@ class Db:
         query = """UPDATE Posts SET data = ?, language = ? WHERE id = ?"""
         self.con.execute(query, [data, language_id, id])
         self.con.commit()
+    
+    def delete_post_by_id(self, id):
+        query = """DELETE FROM Posts WHERE id = ?"""
+        self.con.execute(query, [id])
+        self.con.commit()
