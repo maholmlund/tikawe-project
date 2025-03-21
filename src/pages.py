@@ -1,11 +1,11 @@
+from sqlite3 import IntegrityError
+from functools import wraps
+import markupsafe
 from flask import Flask, request, redirect, session
 from flask import render_template, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
 from db import Db
-from sqlite3 import IntegrityError
-from functools import wraps
 import config
-import markupsafe
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
@@ -26,7 +26,8 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-@app.route("/")
+
+@app.route("/", methods=["GET"])
 def index():
     posts = Db().get_posts(20)
     if "username" in session:
@@ -37,13 +38,15 @@ def index():
 def login():
     if request.method == "GET":
         return render_template("login.html", next=request.args.get("next"))
+    if "username" not in request.form or "pwd" not in request.form:
+        return "missing username or password", 400
     username = request.form["username"]
     pwd = request.form["pwd"]
     user = Db().get_user_by_username(username)
     if user and check_password_hash(user.pwd_hash, pwd):
-        session["username"] = user.username 
+        session["username"] = user.username
         if "next" in request.form:
-                return redirect(request.form["next"])
+            return redirect(request.form["next"])
         return redirect("/")
     return render_template("login.html", msg="invalid username or password")
 
@@ -57,6 +60,10 @@ def logout():
 def register():
     if request.method == "GET":
         return render_template("register.html")
+    if ("username" not in request.form or
+            "password1" not in request.form or
+            "password2" not in request.form):
+        return "missing fields", 400
     username = request.form["username"]
     pwd1 = request.form["password1"]
     pwd2 = request.form["password2"]
@@ -73,10 +80,18 @@ def register():
 def post():
     if request.method == "GET":
         languages = Db().get_languages()
-        return render_template("post.html", languages=languages) 
+        return render_template("post.html", languages=languages)
     if "language" not in request.form:
-        return render_template("post.html", languages=Db().get_languages(), msg="please select a language")
+        return render_template(
+                "post.html",
+                languages=Db().get_languages(),
+                msg="please select a language")
     language_id = Db().get_language_id(request.form["language"])
+    if "data" not in request.form or len(request.form["data"]) == 0:
+        return render_template(
+                "post.html",
+                languages=Db().get_languages(),
+                msg="please provide some content")
     data = request.form["data"]
     user_id = Db().get_user_by_username(session["username"]).id
     Db().create_post(data, language_id, user_id)
@@ -85,12 +100,15 @@ def post():
 @app.route("/edit/<post_id>", methods=["GET", "POST"])
 @login_required
 def edit(post_id):
-    post = Db().get_post_by_id(post_id)
-    if post.username != session["username"]:
+    target_post = Db().get_post_by_id(post_id)
+    if target_post.username != session["username"]:
         return "invalid user", 403
     if request.method == "GET":
         languages = Db().get_languages()
-        return render_template("edit_post.html", languages=languages, default_lang=post.language, data=post.data)
+        return render_template("edit_post.html",
+                               languages=languages,
+                               default_lang=target_post.language,
+                               data=target_post.data)
     data = request.form["data"]
     language_id = Db().get_language_id(request.form["language"])
     Db().update_post_by_id(post_id, data, language_id)
