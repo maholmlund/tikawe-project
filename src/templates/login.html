@@ -14,7 +14,9 @@
 			<label for="pwd">Password: </label>
 			<input id="pwd" name="pwd" type="password" />
 			<br />
+			{% if next %}
 			<input type="hidden" name="next" value="{{ next }}" />
+			{% endif %}
 			<button type="submit">Login</button>
 		</form>
 		<p>{{ msg }}</p>

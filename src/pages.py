@@ -42,7 +42,7 @@ def login():
     user = Db().get_user_by_username(username)
     if user and check_password_hash(user.pwd_hash, pwd):
         session["username"] = user.username 
-        if request.form["next"] != "":
+        if "next" in request.form:
                 return redirect(request.form["next"])
         return redirect("/")
     return render_template("login.html", msg="invalid username or password")
