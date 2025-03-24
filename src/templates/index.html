@@ -4,6 +4,7 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Snippet Share</title>
+		<link rel="stylesheet" href="static/index.css" />
 	</head>
 	<body>
 		<h1>Snippet Share</h1>
@@ -22,10 +23,12 @@
 		<h2>Feed</h2>
 		<hr />
 		{% for post in posts %}
-		<div>
-			<p>{{ post.username }}</p>
-			<p>{{ post.language }}</p>
-			<p>{{ post.data | show_lines }}</p>
+		<div class="post_container">
+			<p class="username">{{ post.username }}</p>
+			<p class="language">{{ post.language }}</p>
+			<div class="code_section">
+				<p>{{ post.data | show_lines }}</p>
+			</div>
 			<p>Likes: 40</p>
 			<a href="">6 comments</a>
 			{% if username == post.username %}

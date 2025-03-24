@@ -1,0 +1,29 @@
+.post_container {
+	border: 0.1em solid black;
+	background-color: rgb(238, 238, 238);
+	border-radius: 0.4em;
+	margin-bottom: 1em;
+	padding: 1em;
+	max-width: 50rem;
+}
+
+.code_section {
+	font-family: monospace;
+	border: 0.1em solid gray;
+	border-radius: 0.2em;
+	padding: 0.4em;
+}
+
+.username {
+	display: inline-block;
+	border-radius: 10%;
+	background-color: aqua;
+	padding: 0.4rem;
+}
+
+.language {
+	display: inline-block;
+	border-radius: 10%;
+	background-color: chocolate;
+	padding: 0.4rem;
+}
