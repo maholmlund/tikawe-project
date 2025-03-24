@@ -122,3 +122,9 @@ def delete(post_id):
         return "invalid user", 403
     Db().delete_post_by_id(post_id)
     return redirect("/")
+
+@app.route("/search", methods=["GET"])
+def search():
+    term = request.args.get("query")
+    posts = Db().search_post_by_string(term, 20)
+    return render_template("search.html", posts=posts)

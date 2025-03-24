@@ -3,28 +3,11 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Snippet Share</title>
+		<title>Search results</title>
 		<link rel="stylesheet" href="static/index.css" />
 	</head>
 	<body>
-		<h1>Snippet Share</h1>
-		<div>
-			{% if username %}
-			<p>Logged in as {{username}}</p>
-			<form method="post" action="/logout">
-				<button>Log Out</button>
-			</form>
-			<a href="/post">New post</a>
-			{% else %}
-			<a href="/login">Log in</a>
-			<a href="/register">Create new user</a>
-			{% endif %}
-			<form action="/search" method="GET">
-				<label for="query">Search: </label>
-				<input id="query" name="query" type="text" />
-			</form>
-		</div>
-		<h2>Feed</h2>
+		<h1>Search results</h1>
 		<hr />
 		{% for post in posts %}
 		<div class="post_container">

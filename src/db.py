@@ -70,3 +70,11 @@ class Db:
         query = """DELETE FROM Posts WHERE id = ?"""
         self.con.execute(query, [id])
         self.con.commit()
+    
+    def search_post_by_string(self, term, limit):
+        query = """SELECT P.data, L.name, U.name, P.id FROM \
+        Posts P, Users U, Languages L \
+        WHERE U.id = P.user_id AND L.id = P.language AND LOWER(P.data) LIKE ? LIMIT ?"""
+        results = self.con.execute(query, ["%" + term.lower() + "%", limit]).fetchall()
+        results = [Post(x[0], x[1], x[2], x[3]) for x in results]
+        return results
