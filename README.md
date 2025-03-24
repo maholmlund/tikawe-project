@@ -12,3 +12,25 @@ Sovelluksessä käyttäjät pystyvät:
 - Hakemaan julkaisuja ainakin tekijän ja kielen perusteella
 - Tarkastelemaan käyttäjien profiileja ja näkemään julkaisut, niiden määrä, yms.
 - Näkemään julkaisujen kommentit ja tykkäysten määrät
+
+## Käyttö
+
+Asenna flask-kirjasto:
+
+```
+$ pip install flask
+```
+
+Alusta tietokanta:
+
+```
+$ python3 database_init.py
+```
+
+Suorita sovellus:
+
+```
+$ flask --app src/pages.py run
+```
+
+Tietokannan alustus luo järjestelmään valmiiksi joitakin postauksia. Lisäksi luodaan käyttäjät hertta, perttu, miika, inka ja rene. Kaikkien näiden salasana on "salasana".
