@@ -78,3 +78,14 @@ class Db:
         results = self.con.execute(query, ["%" + term.lower() + "%", limit]).fetchall()
         results = [Post(x[0], x[1], x[2], x[3]) for x in results]
         return results
+
+    def toggle_like(self, post_id, user_id):
+        select_query = """SELECT id FROM Likes WHERE user_id = ? AND post_id = ?"""
+        like_id = self.con.execute(select_query, [user_id, post_id]).fetchone()
+        if like_id:
+            delte_query = """DELETE FROM Likes WHERE id = ?"""
+            self.con.execute(delte_query, [like_id[0]])
+        else:
+            add_query = """INSERT INTO Likes (user_id, post_id) VALUES (?, ?)"""
+            self.con.execute(add_query, [user_id, post_id])
+        self.con.commit()

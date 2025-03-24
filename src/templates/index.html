@@ -33,7 +33,12 @@
 			<div class="code_section">
 				<p>{{ post.data | show_lines }}</p>
 			</div>
-			<p>Likes: 40</p>
+			<form action="/like/{{ post.id }}" method="POST">
+				<button>
+					<img src="static/heart_black.svg" alt="heart" />
+					<p>40</p>
+				</button>
+			</form>
 			<a href="">6 comments</a>
 			{% if username == post.username %}
 			<a href="/edit/{{ post.id }}">Edit</a>

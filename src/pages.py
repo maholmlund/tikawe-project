@@ -128,3 +128,10 @@ def search():
     term = request.args.get("query")
     posts = Db().search_post_by_string(term, 20)
     return render_template("search.html", posts=posts)
+
+@login_required
+@app.route("/like/<post_id>", methods=["POST"])
+def like(post_id):
+    user_id = Db().get_user_by_username(session["username"]).id
+    Db().toggle_like(post_id, user_id)
+    return redirect("/")
