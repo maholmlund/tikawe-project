@@ -7,11 +7,12 @@ class User:
         self.pwd_hash = pwd_hash
 
 class Post:
-    def __init__(self, data, language, username, id):
+    def __init__(self, data, language, username, id, likes):
         self.data = data
         self.language = language
         self.username = username
         self.id = id
+        self.likes = likes
 
 class Db:
     def __init__(self):
@@ -49,16 +50,25 @@ class Db:
         return result[0]
     
     def get_posts(self, limit):
-        query = """SELECT P.data, L.name, U.name, P.id FROM Posts P, Users U, Languages L WHERE U.id = P.user_id AND L.id = P.language LIMIT ?"""
+        query = """SELECT P.data, L.name, U.name, P.id, COUNT(T.id) \
+        FROM Posts P LEFT JOIN Users U ON P.user_id = U.id \
+        LEFT JOIN Languages L ON L.id = P.language \
+        LEFT JOIN Likes T ON T.post_id = P.id \
+        GROUP BY P.id \
+        LIMIT ?"""
         results = self.con.execute(query, [limit]).fetchall()
-        results = [Post(x[0], x[1], x[2], x[3]) for x in results]
+        results = [Post(x[0], x[1], x[2], x[3], x[4]) for x in results]
         return results
         
     def get_post_by_id(self, id):
-        query = """SELECT P.data, L.name, U.name, P.id FROM Posts P, Languages L, Users U WHERE L.id = P.language AND U.id = P.user_id AND P.id = ?"""
+        query = """SELECT P.data, L.name, U.name, P.id, COUNT(T.id) \
+        FROM Posts P LEFT JOIN Languages L ON P.language = L.id \
+        LEFT JOIN Users U ON U.id = P.user_id \
+        LEFT JOIN Likes T ON T.post_id = P.id \
+        WHERE P.id = ?"""
         results = self.con.execute(query, [id]).fetchone()
         if results:
-            return Post(results[0], results[1], results[2], results[3])
+            return Post(results[0], results[1], results[2], results[3], results[4])
         return None
     
     def update_post_by_id(self, id, data, language_id):
@@ -72,11 +82,15 @@ class Db:
         self.con.commit()
     
     def search_post_by_string(self, term, limit):
-        query = """SELECT P.data, L.name, U.name, P.id FROM \
-        Posts P, Users U, Languages L \
-        WHERE U.id = P.user_id AND L.id = P.language AND LOWER(P.data) LIKE ? LIMIT ?"""
+        query = """SELECT P.data, L.name, U.name, P.id, COUNT(T.id) FROM \
+        Posts P LEFT JOIN Users U ON U.id = P.user_id \
+        LEFT JOIN Languages L ON L.id = P.language \
+        LEFT JOIN Likes T ON T.post_id = P.id \
+        WHERE LOWER(P.data) LIKE ? \
+        GROUP BY P.id \
+        LIMIT ?"""
         results = self.con.execute(query, ["%" + term.lower() + "%", limit]).fetchall()
-        results = [Post(x[0], x[1], x[2], x[3]) for x in results]
+        results = [Post(x[0], x[1], x[2], x[3], x[4]) for x in results]
         return results
 
     def toggle_like(self, post_id, user_id):
@@ -89,3 +103,12 @@ class Db:
             add_query = """INSERT INTO Likes (user_id, post_id) VALUES (?, ?)"""
             self.con.execute(add_query, [user_id, post_id])
         self.con.commit()
+
+    def user_has_liked_post(self, post_id, user_id):
+        query = """SELECT id FROM Likes WHERE user_id = ? AND post_id = ?"""
+        result = self.con.execute(query, [user_id, post_id])
+        return not result is None
+
+    def get_post_like_count(self, post_id):
+        query = """SELECT COUNT(id) FROM Likes WHERE post_id = ?"""
+        return self.con.execute(query, [post_id]).fetchone()[0]
