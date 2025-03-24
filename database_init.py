@@ -28,25 +28,20 @@ con.commit()
 
 print("creating posts...")
 snippets_python = [
-"""
-print(\"hello world\")
+"""print(\"hello world\")
 """,
-"""
-def foo():
+"""def foo():
     return \"bar\"
 """,
-"""
-for i in range(10):
+"""for i in range(10):
     print(i)
 """,
-""""
-guess = input(\"veikkaa\")
+"""guess = input(\"veikkaa\")
 while input != \"salasana\":
     guess = input(\"veikkaa\")
 print(\"onneksi olkoon!\")
 """,
-"""
-import sqlite3
+"""import sqlite3
 
 con = sqlite3.connect(\"db.db\")
 print(con.execute(\"SELECT * FROM Table\").fetchall())
