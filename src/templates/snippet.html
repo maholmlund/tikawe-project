@@ -1,10 +1,14 @@
-<div class="post_container">
+<div class="post_container" id="post-{{ post.id }}">
 	<p class="username">{{ post.username }}</p>
 	<p class="language">{{ post.language }}</p>
 	<div class="code_section">
 		<p>{{ post.data | show_lines }}</p>
 	</div>
 	<form action="/like/{{ post.id }}" method="POST">
+		<input type="hidden" name="next" value="{{ request.path }}" />
+		{% if query %}
+		<input type="hidden" name="query" value="{{ query }}" />
+		{% endif %}
 		<button>
 			<img src="static/heart_black.svg" alt="heart" />
 			<p>{{ post.likes }}</p>

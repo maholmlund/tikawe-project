@@ -31,8 +31,8 @@ def login_required(f):
 def index():
     posts = Db().get_posts(20)
     if "username" in session:
-        return render_template("index.html", posts=posts, username=session["username"])
-    return render_template("index.html", posts=posts)
+        return render_template("index.html", posts=posts, username=session["username"], request=request)
+    return render_template("index.html", posts=posts, request=request)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -127,11 +127,16 @@ def delete(post_id):
 def search():
     term = request.args.get("query")
     posts = Db().search_post_by_string(term, 20)
-    return render_template("search.html", posts=posts)
+    query = request.query_string.decode("utf-8")
+    return render_template("search.html", posts=posts, request=request, query=query)
 
 @login_required
 @app.route("/like/<post_id>", methods=["POST"])
 def like(post_id):
     user_id = Db().get_user_by_username(session["username"]).id
     Db().toggle_like(post_id, user_id)
-    return redirect("/")
+    if "next" not in request.form:
+        return 400, "missing next field"
+    # I wish we could do this using javascript...
+    query = "" if "query" not in request.form else "?" + str(request.form["query"])
+    return redirect(request.form["next"] + query + f"#post-{post_id}")
