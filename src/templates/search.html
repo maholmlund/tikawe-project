@@ -9,27 +9,6 @@
 	<body>
 		<h1>Search results</h1>
 		<hr />
-		{% for post in posts %}
-		<div class="post_container">
-			<p class="username">{{ post.username }}</p>
-			<p class="language">{{ post.language }}</p>
-			<div class="code_section">
-				<p>{{ post.data | show_lines }}</p>
-			</div>
-			<form action="/like/{{ post.id }}" method="POST">
-				<button>
-					<img src="static/heart_black.svg" alt="heart" />
-					<p>{{ post.likes }}</p>
-				</button>
-			</form>
-			<a href="">6 comments</a>
-			{% if username == post.username %}
-			<a href="/edit/{{ post.id }}">Edit</a>
-			<form method="POST" action="/delete/{{ post.id }}">
-				<button>Delte</button>
-			</form>
-			{% endif %}
-		</div>
-		{% endfor %}
+		{% for post in posts %} {% include 'snippet.html' %} {% endfor %}
 	</body>
 </html>
