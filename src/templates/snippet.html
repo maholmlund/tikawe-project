@@ -23,7 +23,7 @@
 		</button>
 	</form>
 	{% if not hide_link %}
-	<a href="/comments/{{ post.id }}">6 comments</a>
+	<a href="/comments/{{ post.id }}">{{ post.comments }} comments</a>
 	{% endif %}
 	{% if username == post.username %}
 	<a href="/edit/{{ post.id }}">Edit</a>
