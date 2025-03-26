@@ -134,8 +134,8 @@ def search():
     query = request.query_string.decode("utf-8")
     return render_template("search.html", posts=posts, request=request, query=query)
 
-@login_required
 @app.route("/like/<post_id>", methods=["POST"])
+@login_required
 def like(post_id):
     user_id = Db().get_user_by_username(session["username"]).id
     Db().toggle_like(post_id, user_id)

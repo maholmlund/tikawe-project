@@ -4,7 +4,11 @@
 	<div class="code_section">
 		<p>{{ post.data | show_lines }}</p>
 	</div>
+	{% if username %}
 	<form action="/like/{{ post.id }}" method="POST">
+	{% else %}
+	<form action="/login" method="GET">
+	{% endif %}
 		<input type="hidden" name="next" value="{{ request.path }}" />
 		{% if query %}
 		<input type="hidden" name="query" value="{{ query }}" />
