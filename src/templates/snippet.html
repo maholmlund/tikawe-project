@@ -10,7 +10,11 @@
 		<input type="hidden" name="query" value="{{ query }}" />
 		{% endif %}
 		<button>
+			{% if post.liked %}
+			<img src="static/heart_red.svg" alt="heart" />
+			{% else %}
 			<img src="static/heart_black.svg" alt="heart" />
+			{% endif %}
 			<p>{{ post.likes }}</p>
 		</button>
 	</form>

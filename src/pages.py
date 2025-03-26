@@ -29,9 +29,10 @@ def login_required(f):
 
 @app.route("/", methods=["GET"])
 def index():
-    posts = Db().get_posts(20)
     if "username" in session:
+        posts = Db().get_posts(20, Db().get_user_by_username(session["username"]).id)
         return render_template("index.html", posts=posts, username=session["username"], request=request)
+    posts = Db().get_posts(20)
     return render_template("index.html", posts=posts, request=request)
 
 @app.route("/login", methods=["GET", "POST"])
@@ -126,7 +127,10 @@ def delete(post_id):
 @app.route("/search", methods=["GET"])
 def search():
     term = request.args.get("query")
-    posts = Db().search_post_by_string(term, 20)
+    if "username" in session:
+        posts = Db().search_post_by_string(term, 20, Db().get_user_by_username(session["username"]).id)
+    else:
+        posts = Db().search_post_by_string(term, 20)
     query = request.query_string.decode("utf-8")
     return render_template("search.html", posts=posts, request=request, query=query)
 
