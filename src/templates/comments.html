@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Comments</title>
+		<link rel="stylesheet" href="/static/index.css" />
+	</head>
+	<body>
+		<h1>Post:</h1>
+		{% include 'snippet.html' %}
+		<hr />
+		{% for comment in comments %} {% include 'comment.html' %} {% endfor %}
+	</body>
+</html>

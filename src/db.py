@@ -15,6 +15,12 @@ class Post:
         self.likes = likes
         self.liked = liked
 
+class Comment:
+    def __init__(self, data, id, username):
+        self.data = data
+        self.id = id
+        self.username = username
+
 class Db:
     def __init__(self):
         self.con = sqlite3.connect("database.db")
@@ -56,7 +62,7 @@ class Db:
             FROM Posts P LEFT JOIN Users U ON P.user_id = U.id \
             LEFT JOIN Languages L ON L.id = P.language \
             LEFT JOIN Likes T ON T.post_id = P.id \
-            LEFT JOIN Likes Z ON P.id = Z.post_id AND Z.user_id = ?
+            LEFT JOIN Likes Z ON P.id = Z.post_id AND Z.user_id = ? \
             GROUP BY P.id \
             LIMIT ?"""
             results = self.con.execute(query, [user_id, limit]).fetchall()
@@ -147,3 +153,9 @@ class Db:
     def get_post_like_count(self, post_id):
         query = """SELECT COUNT(id) FROM Likes WHERE post_id = ?"""
         return self.con.execute(query, [post_id]).fetchone()[0]
+
+    def get_comments(self, post_id):
+        query = "SELECT C.data, C.id, U.name FROM Comments C, Posts P, Users U WHERE P.id = C.post_id AND U.id = C.user_id AND P.id = ?"
+        results = self.con.execute(query, [post_id]).fetchall()
+        comments = [Comment(x[0], x[1], x[2]) for x in results]
+        return comments

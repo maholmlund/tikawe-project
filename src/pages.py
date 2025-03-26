@@ -144,3 +144,19 @@ def like(post_id):
     # I wish we could do this using javascript...
     query = "" if "query" not in request.form else "?" + str(request.form["query"])
     return redirect(request.form["next"] + query + f"#post-{post_id}")
+
+@app.route("/comments/<post_id>", methods=["GET"])
+def comments(post_id):
+    comments = Db().get_comments(post_id)
+    if "username" in session:
+        post = Db().get_post_by_id(post_id, Db().get_user_by_username(session["username"]).id)
+        return render_template("comments.html",
+                               post=post,
+                               comments=comments,
+                               hide_link = True,
+                               username = session["username"])
+    post = Db().get_post_by_id(post_id)
+    return render_template("comments.html",
+                           post=post,
+                           comments=comments,
+                           hide_link = True)

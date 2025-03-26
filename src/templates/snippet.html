@@ -15,14 +15,16 @@
 		{% endif %}
 		<button>
 			{% if post.liked %}
-			<img src="static/heart_red.svg" alt="heart" />
+			<img src="/static/heart_red.svg" alt="heart" />
 			{% else %}
-			<img src="static/heart_black.svg" alt="heart" />
+			<img src="/static/heart_black.svg" alt="heart" />
 			{% endif %}
 			<p>{{ post.likes }}</p>
 		</button>
 	</form>
-	<a href="">6 comments</a>
+	{% if not hide_link %}
+	<a href="/comments/{{ post.id }}">6 comments</a>
+	{% endif %}
 	{% if username == post.username %}
 	<a href="/edit/{{ post.id }}">Edit</a>
 	<form method="POST" action="/delete/{{ post.id }}">
