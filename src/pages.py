@@ -26,6 +26,13 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+@app.after_request
+def add_header(r):
+    r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    r.headers["Pragma"] = "no-cache"
+    r.headers["Expires"] = "0"
+    return r
+
 
 @app.route("/", methods=["GET"])
 def index():
