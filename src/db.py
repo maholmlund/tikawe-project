@@ -105,6 +105,32 @@ class Db:
                 return Post(results[0], results[1], results[2], results[3], results[4], results[5])
         return None
     
+    def get_posts_by_user_id(self, user_id, limit, current_user_id=None):
+        if user_id:
+            query = """SELECT P.data, L.name, U.name, P.id, COUNT(T.id), COUNT(Z.id), \
+            (SELECT COUNT(C.id) FROM Comments C WHERE C.post_id = P.id) FROM \
+            Posts P LEFT JOIN Users U ON U.id = P.user_id \
+            LEFT JOIN Languages L ON L.id = P.language \
+            LEFT JOIN Likes T ON T.post_id = P.id \
+            LEFT JOIN Likes Z ON P.id = Z.post_id AND Z.user_id = ?
+            WHERE U.id = ? \
+            GROUP BY P.id \
+            LIMIT ?"""
+            results = self.con.execute(query, [current_user_id, user_id, limit]).fetchall()
+            results = [Post(x[0], x[1], x[2], x[3], x[4], x[6], x[5] != 0) for x in results]
+        else:
+            query = """SELECT P.data, L.name, U.name, P.id, COUNT(T.id), \
+            (SELECT COUNT(C.id) FROM Comments C WHERE C.post_id = P.id) FROM \
+            Posts P LEFT JOIN Users U ON U.id = P.user_id \
+            LEFT JOIN Languages L ON L.id = P.language \
+            LEFT JOIN Likes T ON T.post_id = P.id \
+            WHERE U.id = ?
+            GROUP BY P.id \
+            LIMIT ?"""
+            results = self.con.execute(query, [user_id, limit]).fetchall()
+            results = [Post(x[0], x[1], x[2], x[3], x[4], x[5]) for x in results]
+        return results
+
     def update_post_by_id(self, id, data, language_id):
         query = """UPDATE Posts SET data = ?, language = ? WHERE id = ?"""
         self.con.execute(query, [data, language_id, id])
@@ -171,3 +197,7 @@ class Db:
         query = """INSERT INTO Comments (data, user_id, post_id) VALUES (?, ?, ?)"""
         self.con.execute(query, [data, user_id, post_id])
         self.con.commit()
+
+    def get_user_post_count(self, user_id):
+        query = """SELECT COUNT(id) FROM Posts WHERE user_id = ?"""
+        return self.con.execute(query, [user_id]).fetchone()[0]

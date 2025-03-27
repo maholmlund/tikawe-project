@@ -183,3 +183,17 @@ def new_comment(post_id):
     user_id = Db().get_user_by_username(session["username"]).id
     Db().create_comment(request.form["data"], user_id, post_id)
     return redirect("/comments/" + post_id)
+
+@app.route("/user/<username>", methods=["GET"])
+def user(username):
+    user = Db().get_user_by_username(username)
+    post_count = Db().get_user_post_count(user.id)
+    if "username" in session:
+        posts = Db().get_posts_by_user_id(user.id, 20, current_user_id=Db().get_user_by_username(session["username"]).id)
+        return render_template("user.html",
+                               target_user=username,
+                               username=session["username"],
+                               post_count=post_count,
+                               posts=posts)
+    posts = Db().get_posts_by_user_id(user.id, 20)
+    return render_template("user.html", target_user=username, post_count=post_count, posts=posts)

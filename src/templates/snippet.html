@@ -1,5 +1,5 @@
 <div class="post_container" id="post-{{ post.id }}">
-	<p class="username">{{ post.username }}</p>
+	<a class="username" href="/user/{{ post.username }}">{{ post.username }}</a>
 	<p class="language">{{ post.language }}</p>
 	<div class="code_section">
 		<p>{{ post.data | show_lines }}</p>
