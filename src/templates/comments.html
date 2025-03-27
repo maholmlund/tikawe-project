@@ -10,6 +10,18 @@
 		<h1>Post:</h1>
 		{% include 'snippet.html' %}
 		<hr />
-		{% for comment in comments %} {% include 'comment.html' %} {% endfor %}
+		{% if username %}
+		<div>
+			<h2>New comment</h2>
+			<form action="/new_comment/{{ post.id }}" method="post">
+				<input type="text" name="data" id="" />
+				<button>Submit</button>
+			</form>
+			{% if msg %}
+			<p>{{msg}}</p>
+			{% endif %}
+		</div>
+		{% endif %} {% for comment in comments %} {% include 'comment.html' %} {%
+		endfor %}
 	</body>
 </html>

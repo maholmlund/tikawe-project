@@ -160,3 +160,19 @@ def comments(post_id):
                            post=post,
                            comments=comments,
                            hide_link = True)
+
+@app.route("/new_comment/<post_id>", methods=["POST"])
+@login_required
+def new_comment(post_id):
+    if "data" not in request.form or len(request.form["data"]) == 0:
+        post = Db().get_post_by_id(post_id)
+        comments = Db().get_comments(post_id)
+        return render_template("comments.html",
+                               post=post,
+                               comments=comments,
+                               hide_link = True,
+                               username = session["username"],
+                               msg="please provide a valid comment")
+    user_id = Db().get_user_by_username(session["username"]).id
+    Db().create_comment(request.form["data"], user_id, post_id)
+    return redirect("/comments/" + post_id)

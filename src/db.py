@@ -166,3 +166,8 @@ class Db:
         results = self.con.execute(query, [post_id]).fetchall()
         comments = [Comment(x[0], x[1], x[2]) for x in results]
         return comments
+
+    def create_comment(self, data, user_id, post_id):
+        query = """INSERT INTO Comments (data, user_id, post_id) VALUES (?, ?, ?)"""
+        self.con.execute(query, [data, user_id, post_id])
+        self.con.commit()
