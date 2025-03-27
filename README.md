@@ -9,7 +9,7 @@ Sovelluksessä käyttäjät pystyvät:
 - Näkemään toisten käyttäjien julkaisuja
 - Tykkäämään ja kommentoimaan toisten julkaisuja
 - Poistamaan oman julkaisunsa
-- Hakemaan julkaisuja ainakin tekijän ja kielen perusteella
+- Hakemaan julkaisuja ainakin tekijän ja hakusanan perusteella
 - Tarkastelemaan käyttäjien profiileja ja näkemään julkaisut, niiden määrä, yms.
 - Näkemään julkaisujen kommentit ja tykkäysten määrät
 
