@@ -34,3 +34,5 @@ $ flask --app src/pages.py run
 ```
 
 Tietokannan alustus luo järjestelmään valmiiksi joitakin postauksia. Lisäksi luodaan käyttäjät hertta, perttu, miika, inka ja rene. Kaikkien näiden salasana on "salasana".
+
+SVG-kuvat: [tablericons.com](https://tablericons.com)
