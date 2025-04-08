@@ -1,10 +1,12 @@
 import sqlite3
 
+
 class User:
     def __init__(self, username, pwd_hash, id):
         self.id = id
         self.username = username
         self.pwd_hash = pwd_hash
+
 
 class Post:
     def __init__(self, data, language, username, id, likes, comments, liked=False):
@@ -16,11 +18,13 @@ class Post:
         self.liked = liked
         self.comments = comments
 
+
 class Comment:
     def __init__(self, data, id, username):
         self.data = data
         self.id = id
         self.username = username
+
 
 class Db:
     def __init__(self):
@@ -38,12 +42,12 @@ class Db:
         query = """INSERT INTO Users (name, pwd_hash) VALUES (?, ?)"""
         self.con.execute(query, [username, pwd_hash])
         self.con.commit()
-    
+
     def create_post(self, data, language_id, user_id):
         query = """INSERT INTO Posts (data, language, user_id) VALUES (?, ?, ?)"""
         self.con.execute(query, [data, language_id, user_id])
         self.con.commit()
-    
+
     def get_languages(self):
         query = """SELECT name FROM Languages"""
         results = self.con.execute(query).fetchall()
@@ -51,12 +55,12 @@ class Db:
             results = []
         results = map(lambda x: x[0], results)
         return results
-    
+
     def get_language_id(self, name):
         query = """SELECT id FROM Languages WHERE name = ?"""
         result = self.con.execute(query, [name]).fetchone()
         return result[0]
-    
+
     def get_posts(self, limit, user_id=None):
         if user_id:
             query = """SELECT P.data, L.name, U.name, P.id, COUNT(T.id), COUNT(Z.id), \
@@ -68,7 +72,8 @@ class Db:
             GROUP BY P.id \
             LIMIT ?"""
             results = self.con.execute(query, [user_id, limit]).fetchall()
-            results = [Post(x[0], x[1], x[2], x[3], x[4], x[6], x[5] != 0) for x in results]
+            results = [Post(x[0], x[1], x[2], x[3], x[4], x[6], x[5] != 0)
+                       for x in results]
         else:
             query = """SELECT P.data, L.name, U.name, P.id, COUNT(T.id), \
             (SELECT COUNT(C.id) FROM Comments C WHERE C.post_id = P.id) \
@@ -78,9 +83,10 @@ class Db:
             GROUP BY P.id \
             LIMIT ?"""
             results = self.con.execute(query, [limit]).fetchall()
-            results = [Post(x[0], x[1], x[2], x[3], x[4], x[5]) for x in results]
+            results = [Post(x[0], x[1], x[2], x[3], x[4], x[5])
+                       for x in results]
         return results
-        
+
     def get_post_by_id(self, id, user_id=None):
         if user_id:
             query = """SELECT P.data, L.name, U.name, P.id, COUNT(T.id), COUNT(Z.id), \
@@ -104,7 +110,7 @@ class Db:
             if results:
                 return Post(results[0], results[1], results[2], results[3], results[4], results[5])
         return None
-    
+
     def get_posts_by_user_id(self, user_id, limit, current_user_id=None):
         if user_id:
             query = """SELECT P.data, L.name, U.name, P.id, COUNT(T.id), COUNT(Z.id), \
@@ -116,8 +122,10 @@ class Db:
             WHERE U.id = ? \
             GROUP BY P.id \
             LIMIT ?"""
-            results = self.con.execute(query, [current_user_id, user_id, limit]).fetchall()
-            results = [Post(x[0], x[1], x[2], x[3], x[4], x[6], x[5] != 0) for x in results]
+            results = self.con.execute(
+                query, [current_user_id, user_id, limit]).fetchall()
+            results = [Post(x[0], x[1], x[2], x[3], x[4], x[6], x[5] != 0)
+                       for x in results]
         else:
             query = """SELECT P.data, L.name, U.name, P.id, COUNT(T.id), \
             (SELECT COUNT(C.id) FROM Comments C WHERE C.post_id = P.id) FROM \
@@ -128,19 +136,20 @@ class Db:
             GROUP BY P.id \
             LIMIT ?"""
             results = self.con.execute(query, [user_id, limit]).fetchall()
-            results = [Post(x[0], x[1], x[2], x[3], x[4], x[5]) for x in results]
+            results = [Post(x[0], x[1], x[2], x[3], x[4], x[5])
+                       for x in results]
         return results
 
     def update_post_by_id(self, id, data, language_id):
         query = """UPDATE Posts SET data = ?, language = ? WHERE id = ?"""
         self.con.execute(query, [data, language_id, id])
         self.con.commit()
-    
+
     def delete_post_by_id(self, id):
         query = """DELETE FROM Posts WHERE id = ?"""
         self.con.execute(query, [id])
         self.con.commit()
-    
+
     def search_post_by_string(self, term, limit, user_id=None):
         if user_id:
             query = """SELECT P.data, L.name, U.name, P.id, COUNT(T.id), COUNT(Z.id), \
@@ -152,8 +161,10 @@ class Db:
             WHERE LOWER(P.data) LIKE ? \
             GROUP BY P.id \
             LIMIT ?"""
-            results = self.con.execute(query, [user_id, "%" + term.lower() + "%", limit]).fetchall()
-            results = [Post(x[0], x[1], x[2], x[3], x[4], x[6], x[5] != 0) for x in results]
+            results = self.con.execute(
+                query, [user_id, "%" + term.lower() + "%", limit]).fetchall()
+            results = [Post(x[0], x[1], x[2], x[3], x[4], x[6], x[5] != 0)
+                       for x in results]
         else:
             query = """SELECT P.data, L.name, U.name, P.id, COUNT(T.id), \
             (SELECT COUNT(C.id) FROM Comments C WHERE C.post_id = P.id) FROM \
@@ -163,8 +174,10 @@ class Db:
             WHERE LOWER(P.data) LIKE ? \
             GROUP BY P.id \
             LIMIT ?"""
-            results = self.con.execute(query, ["%" + term.lower() + "%", limit]).fetchall()
-            results = [Post(x[0], x[1], x[2], x[3], x[4], x[5]) for x in results]
+            results = self.con.execute(
+                query, ["%" + term.lower() + "%", limit]).fetchall()
+            results = [Post(x[0], x[1], x[2], x[3], x[4], x[5])
+                       for x in results]
         return results
 
     def toggle_like(self, post_id, user_id):

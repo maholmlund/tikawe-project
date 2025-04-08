@@ -18,6 +18,7 @@ def show_lines(content):
     content = content.replace("\n", "<br />")
     return markupsafe.Markup(content)
 
+
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -25,6 +26,7 @@ def login_required(f):
             return redirect(url_for('login', next=request.path))
         return f(*args, **kwargs)
     return decorated_function
+
 
 @app.after_request
 def add_header(r):
@@ -37,10 +39,12 @@ def add_header(r):
 @app.route("/", methods=["GET"])
 def index():
     if "username" in session:
-        posts = Db().get_posts(60, Db().get_user_by_username(session["username"]).id)
+        posts = Db().get_posts(
+            60, Db().get_user_by_username(session["username"]).id)
         return render_template("index.html", posts=posts, username=session["username"], request=request)
     posts = Db().get_posts(60)
     return render_template("index.html", posts=posts, request=request)
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -58,11 +62,13 @@ def login():
         return redirect("/")
     return render_template("login.html", msg="invalid username or password")
 
+
 @app.route("/logout", methods=["POST"])
 def logout():
     if "username" in session:
         del session["username"]
     return redirect("/")
+
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -83,6 +89,7 @@ def register():
         return render_template("register.html", msg="username already in use")
     return redirect("/")
 
+
 @app.route("/post", methods=["GET", "POST"])
 @login_required
 def post():
@@ -91,19 +98,20 @@ def post():
         return render_template("post.html", languages=languages)
     if "language" not in request.form:
         return render_template(
-                "post.html",
-                languages=Db().get_languages(),
-                msg="please select a language")
+            "post.html",
+            languages=Db().get_languages(),
+            msg="please select a language")
     language_id = Db().get_language_id(request.form["language"])
     if "data" not in request.form or len(request.form["data"]) == 0:
         return render_template(
-                "post.html",
-                languages=Db().get_languages(),
-                msg="please provide some content")
+            "post.html",
+            languages=Db().get_languages(),
+            msg="please provide some content")
     data = request.form["data"]
     user_id = Db().get_user_by_username(session["username"]).id
     Db().create_post(data, language_id, user_id)
     return redirect("/")
+
 
 @app.route("/edit/<post_id>", methods=["GET", "POST"])
 @login_required
@@ -122,6 +130,7 @@ def edit(post_id):
     Db().update_post_by_id(post_id, data, language_id)
     return redirect("/")
 
+
 @app.route("/delete/<post_id>", methods=["POST"])
 @login_required
 def delete(post_id):
@@ -131,15 +140,18 @@ def delete(post_id):
     Db().delete_post_by_id(post_id)
     return redirect("/")
 
+
 @app.route("/search", methods=["GET"])
 def search():
     term = request.args.get("query")
     if "username" in session:
-        posts = Db().search_post_by_string(term, 20, Db().get_user_by_username(session["username"]).id)
+        posts = Db().search_post_by_string(
+            term, 20, Db().get_user_by_username(session["username"]).id)
     else:
         posts = Db().search_post_by_string(term, 20)
     query = request.query_string.decode("utf-8")
     return render_template("search.html", posts=posts, request=request, query=query)
+
 
 @app.route("/like/<post_id>", methods=["POST"])
 @login_required
@@ -149,24 +161,28 @@ def like(post_id):
     if "next" not in request.form:
         return 400, "missing next field"
     # I wish we could do this using javascript...
-    query = "" if "query" not in request.form else "?" + str(request.form["query"])
+    query = "" if "query" not in request.form else "?" + \
+        str(request.form["query"])
     return redirect(request.form["next"] + query + f"#post-{post_id}")
+
 
 @app.route("/comments/<post_id>", methods=["GET"])
 def comments(post_id):
     comments = Db().get_comments(post_id)
     if "username" in session:
-        post = Db().get_post_by_id(post_id, Db().get_user_by_username(session["username"]).id)
+        post = Db().get_post_by_id(
+            post_id, Db().get_user_by_username(session["username"]).id)
         return render_template("comments.html",
                                post=post,
                                comments=comments,
-                               hide_link = True,
-                               username = session["username"])
+                               hide_link=True,
+                               username=session["username"])
     post = Db().get_post_by_id(post_id)
     return render_template("comments.html",
                            post=post,
                            comments=comments,
-                           hide_link = True)
+                           hide_link=True)
+
 
 @app.route("/new_comment/<post_id>", methods=["POST"])
 @login_required
@@ -177,19 +193,21 @@ def new_comment(post_id):
         return render_template("comments.html",
                                post=post,
                                comments=comments,
-                               hide_link = True,
-                               username = session["username"],
+                               hide_link=True,
+                               username=session["username"],
                                msg="please provide a valid comment")
     user_id = Db().get_user_by_username(session["username"]).id
     Db().create_comment(request.form["data"], user_id, post_id)
     return redirect("/comments/" + post_id)
+
 
 @app.route("/user/<username>", methods=["GET"])
 def user(username):
     user = Db().get_user_by_username(username)
     post_count = Db().get_user_post_count(user.id)
     if "username" in session:
-        posts = Db().get_posts_by_user_id(user.id, 20, current_user_id=Db().get_user_by_username(session["username"]).id)
+        posts = Db().get_posts_by_user_id(
+            user.id, 20, current_user_id=Db().get_user_by_username(session["username"]).id)
         return render_template("user.html",
                                target_user=username,
                                username=session["username"],
