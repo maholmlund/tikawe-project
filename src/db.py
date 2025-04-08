@@ -1,4 +1,5 @@
 import sqlite3
+from sqlite3 import IntegrityError
 
 
 class User:
@@ -40,8 +41,13 @@ class Db:
 
     def create_user(self, username, pwd_hash):
         query = """INSERT INTO Users (name, pwd_hash) VALUES (?, ?)"""
-        self.con.execute(query, [username, pwd_hash])
+        try:
+            self.con.execute(query, [username, pwd_hash])
+        except IntegrityError:
+            self.con.commit()
+            return False
         self.con.commit()
+        return True
 
     def create_post(self, data, language_id, user_id):
         query = """INSERT INTO Posts (data, language, user_id) VALUES (?, ?, ?)"""

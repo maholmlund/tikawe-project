@@ -84,9 +84,7 @@ def register():
     pwd2 = request.form["password2"]
     if pwd1 != pwd2:
         return render_template("register.html", msg="passwords do not match")
-    try:
-        Db().create_user(username, generate_password_hash(pwd1))
-    except IntegrityError:
+    if not Db().create_user(username, generate_password_hash(pwd1)):
         return render_template("register.html", msg="username already in use")
     return redirect("/")
 
