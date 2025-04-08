@@ -49,8 +49,10 @@ def index():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
-        return render_template("login.html",
-                               next=request.args.get("next") + "?" + request.args.get("query"))
+        query = "?" + \
+            request.args.get("query") if "query" in request.args else ""
+        next = request.args.get("next") if "next" in request.args else "/"
+        return render_template("login.html", next=next + query)
     if "username" not in request.form or "pwd" not in request.form:
         return "missing username or password", 400
     username = request.form["username"]
