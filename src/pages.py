@@ -49,7 +49,8 @@ def index():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
-        return render_template("login.html", next=request.args.get("next"))
+        return render_template("login.html",
+                               next=request.args.get("next") + "?" + request.args.get("query"))
     if "username" not in request.form or "pwd" not in request.form:
         return "missing username or password", 400
     username = request.form["username"]
@@ -150,7 +151,12 @@ def search():
     else:
         posts = Db().search_post_by_string(term, 20)
     query = request.query_string.decode("utf-8")
-    return render_template("search.html", posts=posts, request=request, query=query)
+    username = session["username"] if "username" in session else None
+    return render_template("search.html",
+                           posts=posts,
+                           request=request,
+                           query=query,
+                           username=username)
 
 
 @app.route("/like/<post_id>", methods=["POST"])
