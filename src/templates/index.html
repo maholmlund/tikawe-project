@@ -9,8 +9,8 @@
 	<body>
 		<h1>Snippet Share</h1>
 		<div>
-			{% if username %}
-			<p>Logged in as {{username}}</p>
+			{% if g.user %}
+			<p>Logged in as {{g.user.username}}</p>
 			<form method="post" action="/logout">
 				<button>Log Out</button>
 			</form>

@@ -10,7 +10,7 @@
 		<h1>Post:</h1>
 		{% include 'snippet.html' %}
 		<hr />
-		{% if username %}
+		{% if g.user %}
 		<div>
 			<h2>New comment</h2>
 			<form action="/new_comment/{{ post.id }}" method="post">
