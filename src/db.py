@@ -151,6 +151,8 @@ class Db:
         self.con.commit()
 
     def search_post_by_string(self, term, limit, user_id=None):
+        if not term:
+            term = ""
         if user_id:
             query = """SELECT P.data, L.name, U.name, P.id, COUNT(T.id), COUNT(Z.id), \
             (SELECT COUNT(C.id) FROM Comments C WHERE C.post_id = P.id) FROM \
