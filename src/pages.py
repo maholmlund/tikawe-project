@@ -5,6 +5,7 @@ from flask import Flask, request, redirect, session, g
 from flask import render_template, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
 from db import Db
+from forms import RegistrationForm
 import config
 
 app = Flask(__name__)
@@ -82,20 +83,12 @@ def logout():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
-    if request.method == "GET":
-        return render_template("register.html")
-    if ("username" not in request.form or
-            "password1" not in request.form or
-            "password2" not in request.form):
-        return "missing fields", 400
-    username = request.form["username"]
-    pwd1 = request.form["password1"]
-    pwd2 = request.form["password2"]
-    if pwd1 != pwd2:
-        return render_template("register.html", msg="passwords do not match")
-    if not Db().create_user(username, generate_password_hash(pwd1)):
-        return render_template("register.html", msg="username already in use")
-    return redirect("/")
+    form = RegistrationForm(request.form)
+    if request.method == "POST":
+        if form.validate():
+            Db().create_user(form.username, generate_password_hash(form.password1))
+            return redirect("/")
+    return render_template("register.html", registrationform=form)
 
 
 @app.route("/post", methods=["GET", "POST"])

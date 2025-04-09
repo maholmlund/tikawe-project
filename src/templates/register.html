@@ -9,16 +9,33 @@
 		<h1>Create new account</h1>
 		<form action="/register" method="POST">
 			<label for="username">Username: </label>
-			<input id="username" name="username" type="text" />
+			<input
+				id="username"
+				name="username"
+				type="text"
+				value="{{registrationform.username}}"
+			/>
 			<br />
 			<label for="password1">Password</label>
-			<input id="password1" name="password1" type="password" />
+			<input
+				id="password1"
+				name="password1"
+				type="password"
+				value="{{registrationform.password1}}"
+			/>
 			<br />
 			<label for="password2">Retype password</label>
-			<input id="password2" name="password2" type="password" />
+			<input
+				id="password2"
+				name="password2"
+				type="password"
+				value="{{registrationform.password2}}"
+			/>
 			<br />
 			<button>Create</button>
 		</form>
-		<p>{{msg}}</p>
+		{% for msg in registrationform.errors %}
+		<p>Error: {{msg}}</p>
+		{% endfor %}
 	</body>
 </html>
