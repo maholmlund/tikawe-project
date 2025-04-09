@@ -19,3 +19,11 @@ class RegistrationForm:
         if Db().get_user_by_username(self.username) is not None:
             self.errors.append("username already in use")
         return len(self.errors) == 0
+
+
+class LoginForm:
+    def __init__(self, form):
+        self.username = form["username"] if "username" in form else ""
+        self.password = form["password"] if "password" in form else ""
+        self.next = form["next"] if "next" in form else "/"
+        self.errors = []

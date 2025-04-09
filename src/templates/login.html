@@ -9,16 +9,28 @@
 		<h1>Login</h1>
 		<form method="POST" action="/login">
 			<label for="username">Username: </label>
-			<input id="username" name="username" type="text" />
+			<input
+				id="username"
+				name="username"
+				type="text"
+				value="{{loginform.username}}"
+			/>
 			<br />
-			<label for="pwd">Password: </label>
-			<input id="pwd" name="pwd" type="password" />
+			<label for="password">Password: </label>
+			<input
+				id="password"
+				name="password"
+				type="password"
+				value="{{loginform.password}}"
+			/>
 			<br />
 			{% if next %}
 			<input type="hidden" name="next" value="{{ next }}" />
 			{% endif %}
 			<button type="submit">Login</button>
 		</form>
+		{% for msg in loginform.errors %}
 		<p>{{ msg }}</p>
+		{% endfor %}
 	</body>
 </html>

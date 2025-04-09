@@ -5,7 +5,7 @@ from flask import Flask, request, redirect, session, g
 from flask import render_template, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
 from db import Db
-from forms import RegistrationForm
+from forms import RegistrationForm, LoginForm
 import config
 
 app = Flask(__name__)
@@ -56,22 +56,19 @@ def index():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    if request.method == "GET":
-        query = "?" + \
-            request.args.get("query") if "query" in request.args else ""
-        next = request.args.get("next") if "next" in request.args else "/"
-        return render_template("login.html", next=next + query)
-    if "username" not in request.form or "pwd" not in request.form:
-        return "missing username or password", 400
-    username = request.form["username"]
-    pwd = request.form["pwd"]
-    user = Db().get_user_by_username(username)
-    if user and check_password_hash(user.pwd_hash, pwd):
-        session["username"] = user.username
-        if "next" in request.form:
-            return redirect(request.form["next"])
-        return redirect("/")
-    return render_template("login.html", msg="invalid username or password")
+    form = LoginForm(request.form)
+    if request.method == "POST":
+        user = Db().get_user_by_username(form.username)
+        if user and check_password_hash(user.pwd_hash, form.password):
+            session["username"] = user.username
+            return redirect(form.next)
+        else:
+            form.errors.append("username and password do not match")
+    next_url = request.args.get("next")
+    if next_url:
+        next_url += "?" + \
+            request.args["query"] if "query" in request.args else ""
+    return render_template("login.html", loginform=form, next=next_url)
 
 
 @app.route("/logout", methods=["POST"])
