@@ -47,3 +47,15 @@ class LikeForm:
     def __init__(self, form):
         self.next = form["next"] if "next" in form else "/"
         self.query = "?" + form["query"] if "query" in form else ""
+
+
+class CommentForm:
+    def __init__(self, form):
+        self.data = form["data"] if "data" in form else ""
+        self.errors = []
+
+    def validate(self):
+        if len(self.data) == 0:
+            self.errors.append("please provide non-empty comment")
+            return False
+        return True

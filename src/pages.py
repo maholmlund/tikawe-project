@@ -5,7 +5,7 @@ from flask import Flask, request, redirect, session, g
 from flask import render_template, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
 from db import Db
-from forms import RegistrationForm, LoginForm, PostForm, LikeForm
+from forms import RegistrationForm, LoginForm, PostForm, LikeForm, CommentForm
 import config
 
 app = Flask(__name__)
@@ -157,6 +157,7 @@ def like(post_id):
 @app.route("/comments/<post_id>", methods=["GET"])
 def comments(post_id):
     comments = Db().get_comments(post_id)
+    form = CommentForm(request.form)
     if g.user:
         post = Db().get_post_by_id(
             post_id, g.user.id)
@@ -165,22 +166,24 @@ def comments(post_id):
     return render_template("comments.html",
                            post=post,
                            comments=comments,
+                           commentform=form,
                            hide_link=True)
 
 
 @app.route("/new_comment/<post_id>", methods=["POST"])
 @login_required
 def new_comment(post_id):
-    if "data" not in request.form or len(request.form["data"]) == 0:
-        post = Db().get_post_by_id(post_id)
-        comments = Db().get_comments(post_id)
-        return render_template("comments.html",
-                               post=post,
-                               comments=comments,
-                               hide_link=True,
-                               msg="please provide a valid comment")
-    Db().create_comment(request.form["data"], g.user.id, post_id)
-    return redirect("/comments/" + post_id)
+    form = CommentForm(request.form)
+    if form.validate():
+        Db().create_comment(form.data, g.user.id, post_id)
+        return redirect("/comments/" + post_id)
+    post = Db().get_post_by_id(post_id)
+    comments = Db().get_comments(post_id)
+    return render_template("comments.html",
+                           post=post,
+                           comments=comments,
+                           hide_link=True,
+                           commentform=form)
 
 
 @app.route("/user/<username>", methods=["GET"])

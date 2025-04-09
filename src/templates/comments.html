@@ -17,9 +17,9 @@
 				<input type="text" name="data" id="" />
 				<button>Submit</button>
 			</form>
-			{% if msg %}
+			{% for msg in commentform.errors %}
 			<p>{{msg}}</p>
-			{% endif %}
+			{% endfor %}
 		</div>
 		{% endif %} {% for comment in comments %} {% include 'comment.html' %} {%
 		endfor %}
