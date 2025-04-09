@@ -41,3 +41,9 @@ class PostForm:
         if len(self.data.strip()) == 0:
             self.errors.append("empty code not allowed")
         return len(self.errors) == 0
+
+
+class LikeForm:
+    def __init__(self, form):
+        self.next = form["next"] if "next" in form else "/"
+        self.query = "?" + form["query"] if "query" in form else ""

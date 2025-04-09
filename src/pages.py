@@ -5,7 +5,7 @@ from flask import Flask, request, redirect, session, g
 from flask import render_template, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
 from db import Db
-from forms import RegistrationForm, LoginForm, PostForm
+from forms import RegistrationForm, LoginForm, PostForm, LikeForm
 import config
 
 app = Flask(__name__)
@@ -148,13 +148,10 @@ def search():
 @app.route("/like/<post_id>", methods=["POST"])
 @login_required
 def like(post_id):
+    form = LikeForm(request.form)
     Db().toggle_like(post_id, g.user.id)
-    if "next" not in request.form:
-        return 400, "missing next field"
-    query = "" if "query" not in request.form else "?" + \
-        str(request.form["query"])
     # I wish we could do this using javascript...
-    return redirect(request.form["next"] + query + f"#post-{post_id}")
+    return redirect(form.next + form.query + f"#post-{post_id}")
 
 
 @app.route("/comments/<post_id>", methods=["GET"])
