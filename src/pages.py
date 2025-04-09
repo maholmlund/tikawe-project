@@ -103,19 +103,21 @@ def post():
 @app.route("/edit/<post_id>", methods=["GET", "POST"])
 @login_required
 def edit(post_id):
+    form = PostForm(request.form)
     target_post = Db().get_post_by_id(post_id)
     if target_post.username != g.user.username:
         return "invalid user", 403
-    if request.method == "GET":
-        languages = Db().get_languages()
-        return render_template("edit_post.html",
-                               languages=languages,
-                               default_lang=target_post.language,
-                               data=target_post.data)
-    data = request.form["data"]
-    language_id = Db().get_language_id(request.form["language"])
-    Db().update_post_by_id(post_id, data, language_id)
-    return redirect("/")
+    if request.method == "POST":
+        if form.validate():
+            language_id = Db().get_language_id(form.language)
+            Db().update_post_by_id(post_id, form.data, language_id)
+            return redirect("/")
+    languages = Db().get_languages()
+    form.data = target_post.data
+    form.language = target_post.language
+    return render_template("edit_post.html",
+                           languages=languages,
+                           postform=form)
 
 
 @app.route("/delete/<post_id>", methods=["POST"])

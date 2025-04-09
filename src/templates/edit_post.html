@@ -9,19 +9,19 @@
 		<h1>Edit post</h1>
 		<form method="POST" action="#">
 			<textarea name="data" id="data" rows="10" cols="80" maxlength="2000">
-{{ data }}</textarea
+{{ postform.data }}</textarea
 			>
 			<br />
 			{% for l in languages %} <input type="radio" id="language-{{ l }}"
-			name="language" value="{{ l }}" {% if l == default_lang %} checked {%
+			name="language" value="{{ l }}" {% if l == postform.language %} checked {%
 			endif %} />
 			<label for="language-{{ l }}">{{ l }}</label>
 			<br />
 			{% endfor %}
 			<button>Update</button>
 		</form>
-		{% if msg %}
+		{% for msg in postform.errors %}
 		<p>{{ msg }}</p>
-		{% endif %}
+		{% endfor %}
 	</body>
 </html>
