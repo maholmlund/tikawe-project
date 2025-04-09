@@ -5,7 +5,7 @@ from flask import Flask, request, redirect, session, g
 from flask import render_template, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
 from db import Db
-from forms import RegistrationForm, LoginForm
+from forms import RegistrationForm, LoginForm, PostForm
 import config
 
 app = Flask(__name__)
@@ -91,23 +91,13 @@ def register():
 @app.route("/post", methods=["GET", "POST"])
 @login_required
 def post():
-    if request.method == "GET":
-        languages = Db().get_languages()
-        return render_template("post.html", languages=languages)
-    if "language" not in request.form:
-        return render_template(
-            "post.html",
-            languages=Db().get_languages(),
-            msg="please select a language")
-    language_id = Db().get_language_id(request.form["language"])
-    if "data" not in request.form or len(request.form["data"]) == 0:
-        return render_template(
-            "post.html",
-            languages=Db().get_languages(),
-            msg="please provide some content")
-    data = request.form["data"]
-    Db().create_post(data, language_id, g.user.id)
-    return redirect("/")
+    form = PostForm(request.form)
+    if request.method == "POST":
+        if form.validate():
+            language_id = Db().get_language_id(form.language)
+            Db().create_post(form.data, language_id, g.user.id)
+            return redirect("/")
+    return render_template("post.html", postform=form, languages=Db().get_languages())
 
 
 @app.route("/edit/<post_id>", methods=["GET", "POST"])

@@ -27,3 +27,17 @@ class LoginForm:
         self.password = form["password"] if "password" in form else ""
         self.next = form["next"] if "next" in form else "/"
         self.errors = []
+
+
+class PostForm:
+    def __init__(self, form):
+        self.language = form["language"] if "language" in form else ""
+        self.data = form["data"] if "data" in form else ""
+        self.errors = []
+
+    def validate(self):
+        if Db().get_language_id(self.language) is None:
+            self.errors.append("invalid language")
+        if len(self.data.strip()) == 0:
+            self.errors.append("empty code not allowed")
+        return len(self.errors) == 0

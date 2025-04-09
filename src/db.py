@@ -65,7 +65,9 @@ class Db:
     def get_language_id(self, name):
         query = """SELECT id FROM Languages WHERE name = ?"""
         result = self.con.execute(query, [name]).fetchone()
-        return result[0]
+        if result:
+            return result[0]
+        return None
 
     def get_posts(self, limit, user_id=None):
         if user_id:
