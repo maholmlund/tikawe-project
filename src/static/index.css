@@ -1,29 +1,128 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	color: white;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+button {
+  border: none;
+  background-color: transparent;
+}
+
+html {
+	background-color: rgb(41, 41, 41);
+}
+
+a {
+	text-decoration: none;
+}
+
+.content {
+	background-color: rgb(83, 83, 83);
+	max-width: 40rem;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.basic-button {
+  padding: 0.4em;
+	background-color: transparent;
+  border: 0.1em solid black;
+  border-radius: 1em;
+  min-width: 4rem;
+  font-size: medium;
+  text-align: center;
+  display: inline-block;
+}
+
+.icon-button {
+  align-items: center;
+  padding: 0.4em;
+  border: none;
+	background-color: transparent;
+  min-width: 4rem;
+  font-size: medium;
+  text-align: center;
+  display: inline-block;
+}
+
 .post-container {
+	margin-left: auto;
+	margin-right: auto;
 	border: 0.1em solid black;
-	background-color: rgb(238, 238, 238);
-	border-radius: 0.4em;
+	border-radius: 1em;
 	margin-bottom: 1em;
 	padding: 1em;
-	max-width: 50rem;
+	max-width: 30rem;
 }
 
 .code-section {
 	font-family: monospace;
-	border: 0.1em solid gray;
-	border-radius: 0.2em;
-	padding: 0.4em;
+	background-color: rgb(37, 37, 37);
+	border-radius: 0.6em;
+	padding: 0.8em;
 }
 
-.username {
-	display: inline-block;
-	border-radius: 10%;
-	background-color: aqua;
-	padding: 0.4rem;
+.post-data-section {
+  padding-top: 1rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
-.language {
-	display: inline-block;
-	border-radius: 10%;
-	background-color: chocolate;
-	padding: 0.4rem;
+.post-right {
+  display: flex;
+  flex-direction: row;
+}
+
+.post-user-actions {
+  margin-right: 1rem;
+  display: flex;
+  flex-direction: row;
+}
+
+.like-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 1em;
+}
+
+.like-button {
+  display: flex;
+  flex-direction: row;
+  background-color: transparent;
+  border: none;
+  align-items: center;
+  font-size: large;
+}
+
+.like-button img {
+  margin-left: 0.2em;
+}
+
+nav {
+	display: flex;
+	flex-direction: row;
+	height: 4rem;
+	justify-content: space-between;
+	background-color: rgb(220, 127, 155);
+}
+
+.nav-left {
+	margin: 1rem;
+}
+
+.nav-right {
+	display: flex;
+}
+
+.user-section {
+	margin: 1rem;
+}
+
+.search-section {
+	margin: 1rem;
 }
