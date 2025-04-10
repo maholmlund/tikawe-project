@@ -1,42 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Create account</title>
-	</head>
-	<body>
-		<h1>Create new account</h1>
-		<form action="/register" method="POST">
-			<label for="username">Username: </label>
-			<input
-				id="username"
-				name="username"
-				type="text"
-				value="{{registrationform.username}}"
-			/>
-			<br />
-			<label for="password1">Password</label>
-			<input
-				id="password1"
-				name="password1"
-				type="password"
-				value="{{registrationform.password1}}"
-			/>
-			<br />
-			<label for="password2">Retype password</label>
-			<input
-				id="password2"
-				name="password2"
-				type="password"
-				value="{{registrationform.password2}}"
-			/>
-			<br />
-			<input type="hidden" name="csrf_token" value="{{session.csrf_token}}" />
-			<button>Create</button>
-		</form>
-		{% for msg in registrationform.errors %}
-		<p>Error: {{msg}}</p>
-		{% endfor %}
-	</body>
-</html>
+{% extends 'base.html' %} {% block title %}Register{% endblock %} {% block
+content %}
+<h1>Create new account</h1>
+<form action="/register" method="POST">
+	<label for="username">Username: </label>
+	<input
+		id="username"
+		name="username"
+		type="text"
+		value="{{registrationform.username}}"
+	/>
+	<br />
+	<label for="password1">Password</label>
+	<input
+		id="password1"
+		name="password1"
+		type="password"
+		value="{{registrationform.password1}}"
+	/>
+	<br />
+	<label for="password2">Retype password</label>
+	<input
+		id="password2"
+		name="password2"
+		type="password"
+		value="{{registrationform.password2}}"
+	/>
+	<br />
+	<input type="hidden" name="csrf_token" value="{{session.csrf_token}}" />
+	<button>Create</button>
+</form>
+{% for msg in registrationform.errors %}
+<p>Error: {{msg}}</p>
+{% endfor %} {% endblock %}

@@ -1,28 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Comments</title>
-		<link rel="stylesheet" href="/static/index.css" />
-	</head>
-	<body>
-		<h1>Post:</h1>
-		{% include 'snippet.html' %}
-		<hr />
-		{% if g.user %}
-		<div>
-			<h2>New comment</h2>
-			<form action="/new_comment/{{ post.id }}" method="post">
-				<input type="text" name="data" id="" />
-				<input type="hidden" name="csrf_token" value="{{session.csrf_token}}" />
-				<button>Submit</button>
-			</form>
-			{% for msg in commentform.errors %}
-			<p>{{msg}}</p>
-			{% endfor %}
-		</div>
-		{% endif %} {% for comment in comments %} {% include 'comment.html' %} {%
-		endfor %}
-	</body>
-</html>
+{% extends 'base.html' %} {% block title %}Comments{% endblock %} {% block
+content %}
+<h1>Post:</h1>
+{% include 'snippet.html' %}
+<hr />
+{% if g.user %}
+<div>
+	<h2>New comment</h2>
+	<form action="/new_comment/{{ post.id }}" method="post">
+		<input type="text" name="data" id="" />
+		<input type="hidden" name="csrf_token" value="{{session.csrf_token}}" />
+		<button>Submit</button>
+	</form>
+	{% for msg in commentform.errors %}
+	<p>{{msg}}</p>
+	{% endfor %}
+</div>
+{% endif %} {% for comment in comments %} {% include 'comment.html' %} {% endfor
+%} {% endblock %}

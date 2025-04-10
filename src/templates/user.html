@@ -1,15 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>{{ target_user }}</title>
-		<link rel="stylesheet" href="/static/index.css" />
-	</head>
-	<body>
-		<h1>{{ target_user }}</h1>
-		<p>Number of posts: {{ post_count }}</p>
-		<hr />
-		{% for post in posts %} {% include 'snippet.html' %} {% endfor %}
-	</body>
-</html>
+{% extends 'base.html' %} {% block title %}{{target_user.username}}{% endblock
+%} {% block content %}
+<h1>{{ target_user }}</h1>
+<p>Number of posts: {{ post_count }}</p>
+<hr />
+{% for post in posts %} {% include 'snippet.html' %} {% endfor %} {% endblock %}

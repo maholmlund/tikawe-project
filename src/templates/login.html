@@ -1,37 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Login</title>
-	</head>
-	<body>
-		<h1>Login</h1>
-		<form method="POST" action="/login">
-			<label for="username">Username: </label>
-			<input
-				id="username"
-				name="username"
-				type="text"
-				value="{{loginform.username}}"
-			/>
-			<br />
-			<label for="password">Password: </label>
-			<input
-				id="password"
-				name="password"
-				type="password"
-				value="{{loginform.password}}"
-			/>
-			<br />
-			{% if next %}
-			<input type="hidden" name="next" value="{{ next }}" />
-			{% endif %}
-			<input type="hidden" name="csrf_token" value="{{session.csrf_token}}" />
-			<button type="submit">Login</button>
-		</form>
-		{% for msg in loginform.errors %}
-		<p>{{ msg }}</p>
-		{% endfor %}
-	</body>
-</html>
+{% extends 'base.html' %} {% block title %}Login{% endblock %} {% block content
+%}
+<h1>Login</h1>
+<form method="POST" action="/login">
+	<label for="username">Username: </label>
+	<input
+		id="username"
+		name="username"
+		type="text"
+		value="{{loginform.username}}"
+	/>
+	<br />
+	<label for="password">Password: </label>
+	<input
+		id="password"
+		name="password"
+		type="password"
+		value="{{loginform.password}}"
+	/>
+	<br />
+	{% if next %}
+	<input type="hidden" name="next" value="{{ next }}" />
+	{% endif %}
+	<input type="hidden" name="csrf_token" value="{{session.csrf_token}}" />
+	<button type="submit">Login</button>
+</form>
+{% for msg in loginform.errors %}
+<p>{{ msg }}</p>
+{% endfor %} {% endblock %}

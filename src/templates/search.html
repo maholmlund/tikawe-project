@@ -1,14 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Search results</title>
-		<link rel="stylesheet" href="static/index.css" />
-	</head>
-	<body>
-		<h1>Search results</h1>
-		<hr />
-		{% for post in posts %} {% include 'snippet.html' %} {% endfor %}
-	</body>
-</html>
+{% extends 'base.html' %} {% block title %}Search results{% endblock %} {% block
+content %}
+<h1>Search results</h1>
+<hr />
+{% for post in posts %} {% include 'snippet.html' %} {% endfor %} {% endblock %}

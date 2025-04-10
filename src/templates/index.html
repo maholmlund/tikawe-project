@@ -1,32 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Snippet Share</title>
-		<link rel="stylesheet" href="static/index.css" />
-	</head>
-	<body>
-		<h1>Snippet Share</h1>
-		<div>
-			{% if g.user %}
-			<p>Logged in as {{g.user.username}}</p>
-			<form method="post" action="/logout">
-				<input type="hidden" name="csrf_token" value="{{session.csrf_token}}"">
-				<button>Log Out</button>
-			</form>
-			<a href="/post">New post</a>
-			{% else %}
-			<a href="/login">Log in</a>
-			<a href="/register">Create new user</a>
-			{% endif %}
-			<form action="/search" method="GET">
-				<label for="query">Search: </label>
-				<input id="query" name="query" type="text" />
-			</form>
-		</div>
-		<h2>Feed</h2>
-		<hr />
-		{% for post in posts %} {% include 'snippet.html' %} {% endfor %}
-	</body>
-</html>
+{% extends 'base.html' %} {% block title %}Snippet Share{% endblock %} {% block
+content %}
+<h2>Feed</h2>
+<hr />
+{% for post in posts %} {% include 'snippet.html' %} {% endfor %} {% endblock %}
