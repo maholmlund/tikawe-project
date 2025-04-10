@@ -6,6 +6,7 @@
 	</div>
 	{% if g.user %}
 	<form action="/like/{{ post.id }}" method="POST">
+    <input type="hidden" name="csrf_token" value="{{session.csrf_token}}">
 	{% else %}
 	<form action="/login" method="GET">
 	{% endif %}
@@ -28,6 +29,7 @@
 	{% if g.user and g.user.username == post.username %}
 	<a href="/edit/{{ post.id }}">Edit</a>
 	<form method="POST" action="/delete/{{ post.id }}">
+    <input type="hidden" name="csrf_token" value="{{session.csrf_token}}">
 		<button>Delte</button>
 	</form>
 	{% endif %}

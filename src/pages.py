@@ -1,12 +1,13 @@
 from sqlite3 import IntegrityError
 from functools import wraps
 import markupsafe
-from flask import Flask, request, redirect, session, g
+from flask import Flask, request, redirect, session, g, abort
 from flask import render_template, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
 from db import Db
 from forms import RegistrationForm, LoginForm, PostForm, LikeForm, CommentForm
 import config
+from secrets import token_hex
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
@@ -37,6 +38,15 @@ def add_user():
         g.user = None
 
 
+@app.before_request
+def check_csrf():
+    if request.method == "POST":
+        if ("csrf_token" not in request.form or
+            "csrf_token" not in session or
+                session["csrf_token"] != request.form["csrf_token"]):
+            abort(403)
+
+
 @app.after_request
 def add_header(r):
     r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
@@ -61,6 +71,7 @@ def login():
         user = Db().get_user_by_username(form.username)
         if user and check_password_hash(user.pwd_hash, form.password):
             session["username"] = user.username
+            session["csrf_token"] = token_hex(16)
             return redirect(form.next)
         else:
             form.errors.append("username and password do not match")

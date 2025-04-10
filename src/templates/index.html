@@ -12,6 +12,7 @@
 			{% if g.user %}
 			<p>Logged in as {{g.user.username}}</p>
 			<form method="post" action="/logout">
+				<input type="hidden" name="csrf_token" value="{{session.csrf_token}}"">
 				<button>Log Out</button>
 			</form>
 			<a href="/post">New post</a>

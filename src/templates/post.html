@@ -18,6 +18,7 @@
 			<label for="language-{{ l }}">{{ l }}</label>
 			<br />
 			{% endfor %}
+			<input type="hidden" name="csrf_token" value="{{session.csrf_token}}" />
 			<button>Submit</button>
 		</form>
 		{% for msg in postform.errors %}

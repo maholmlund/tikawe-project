@@ -32,6 +32,7 @@
 				value="{{registrationform.password2}}"
 			/>
 			<br />
+			<input type="hidden" name="csrf_token" value="{{session.csrf_token}}" />
 			<button>Create</button>
 		</form>
 		{% for msg in registrationform.errors %}
