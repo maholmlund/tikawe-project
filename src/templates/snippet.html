@@ -1,36 +1,40 @@
-<div class="post_container" id="post-{{ post.id }}">
-	<a class="username" href="/user/{{ post.username }}">{{ post.username }}</a>
-	<p class="language">{{ post.language }}</p>
-	<div class="code_section">
+<div class="post-container" id="post-{{ post.id }}">
+	<div class="code-section">
 		<p>{{ post.data | show_lines }}</p>
 	</div>
-	{% if g.user %}
-	<form action="/like/{{ post.id }}" method="POST">
-    <input type="hidden" name="csrf_token" value="{{session.csrf_token}}">
-	{% else %}
-	<form action="/login" method="GET">
-	{% endif %}
-		<input type="hidden" name="next" value="{{ request.path }}" />
-		{% if query %}
-		<input type="hidden" name="query" value="{{ query }}" />
-		{% endif %}
-		<button>
-			{% if post.liked %}
-			<img src="/static/heart_red.svg" alt="heart" />
-			{% else %}
-			<img src="/static/heart_black.svg" alt="heart" />
-			{% endif %}
-			<p>{{ post.likes }}</p>
-		</button>
-	</form>
-	{% if not hide_link %}
-	<a href="/comments/{{ post.id }}">{{ post.comments }} comments</a>
-	{% endif %}
-	{% if g.user and g.user.username == post.username %}
-	<a href="/edit/{{ post.id }}">Edit</a>
-	<form method="POST" action="/delete/{{ post.id }}">
-    <input type="hidden" name="csrf_token" value="{{session.csrf_token}}">
-		<button>Delte</button>
-	</form>
-	{% endif %}
+  <div class="post-left">
+    <a class="username" href="/user/{{ post.username }}">{{ post.username }}</a>
+    <p class="language">{{ post.language }}</p>
+  </div>
+  <div class="post-right">
+    {% if g.user and g.user.username == post.username %}
+    <a href="/edit/{{ post.id }}">Edit</a>
+    <form method="POST" action="/delete/{{ post.id }}">
+      <input type="hidden" name="csrf_token" value="{{session.csrf_token}}">
+      <button>Delte</button>
+    </form>
+    {% endif %}
+    {% if not hide_link %}
+    <a href="/comments/{{ post.id }}">{{ post.comments }} comments</a>
+    {% endif %}
+    {% if g.user %}
+    <form action="/like/{{ post.id }}" method="POST">
+      <input type="hidden" name="csrf_token" value="{{session.csrf_token}}">
+    {% else %}
+    <form action="/login" method="GET">
+    {% endif %}
+      <input type="hidden" name="next" value="{{ request.path }}" />
+      {% if query %}
+      <input type="hidden" name="query" value="{{ query }}" />
+      {% endif %}
+      <button>
+        {% if post.liked %}
+        <img src="/static/heart_red.svg" alt="heart" />
+        {% else %}
+        <img src="/static/heart_black.svg" alt="heart" />
+        {% endif %}
+        <p>{{ post.likes }}</p>
+      </button>
+    </form>
+  </div>
 </div>

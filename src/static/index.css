@@ -1,4 +1,4 @@
-.post_container {
+.post-container {
 	border: 0.1em solid black;
 	background-color: rgb(238, 238, 238);
 	border-radius: 0.4em;
@@ -7,7 +7,7 @@
 	max-width: 50rem;
 }
 
-.code_section {
+.code-section {
 	font-family: monospace;
 	border: 0.1em solid gray;
 	border-radius: 0.2em;
