@@ -213,6 +213,8 @@ def comments(post_id, page_id=1):
 @app.route("/new_comment/<post_id>", methods=["POST"])
 @login_required
 def new_comment(post_id):
+    if not Db().get_post_by_id(post_id):
+        abort(400)
     form = CommentForm(request.form)
     if form.validate():
         Db().create_comment(form.data, g.user.id, post_id)
@@ -230,6 +232,8 @@ def new_comment(post_id):
 @app.route("/user/<username>/<int:page_id>", methods=["GET"])
 def user_page(username, page_id=1):
     target_user = Db().get_user_by_username(username)
+    if not target_user:
+        abort(404)
     post_count = Db().get_user_post_count(target_user.id)
     n_pages = int(ceil(post_count / ITEMS_PER_PAGE))
     pager = Pager(n_pages, page_id, f"/user/{username}/")

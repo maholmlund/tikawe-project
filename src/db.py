@@ -113,7 +113,7 @@ class Db:
             LEFT JOIN Likes Z ON P.id = Z.post_id AND Z.user_id = ?
             WHERE P.id = ?"""
             results = self.con.execute(query, [user_id, id]).fetchone()
-            if results:
+            if results[0]:
                 return Post(results[0], results[1], results[2], results[3], results[4], results[6], results[5] != 0)
         else:
             query = """SELECT P.data, L.name, U.name, P.id, COUNT(T.id), \
@@ -123,7 +123,7 @@ class Db:
             LEFT JOIN Likes T ON T.post_id = P.id \
             WHERE P.id = ?"""
             results = self.con.execute(query, [id]).fetchone()
-            if results:
+            if results[0]:
                 return Post(results[0], results[1], results[2], results[3], results[4], results[5])
         return None
 
