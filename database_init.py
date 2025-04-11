@@ -13,7 +13,7 @@ con.commit()
 print("database created")
 print("creating users...")
 
-usernames = [f"user{x}" for x in range(1, 10**5)]
+usernames = [f"user{x}" for x in range(1, 10**5 + 1)]
 pwd = generate_password_hash("salasana")
 for username in usernames:
     con.execute("INSERT INTO Users (name, pwd_hash) VALUES (?, ?)",
@@ -60,7 +60,7 @@ int main() {
 }"""
 ]
 
-for user_id in range(1, len(usernames)):
+for user_id in range(1, len(usernames) + 1):
     for snippet in snippets_python:
         con.execute("INSERT INTO Posts (data, language, user_id) VALUES (?, ?, ?)",
                     [snippet, 1, user_id])
@@ -74,7 +74,7 @@ print("this might take a while (less than a minute still)")
 n_posts = len(usernames) * (len(snippets_python) + len(snippets_c))
 for post_id in range(1, n_posts + 1):
     for user_id in range(post_id, post_id + 10):
-        user_id = user_id % len(usernames)
+        user_id = (user_id % len(usernames)) + 1
         con.execute("INSERT INTO Comments (user_id, post_id, data) VALUES (?, ?, ?)",
                     [user_id, post_id, f"käyttäjän {user_id} kommentti postaukseen {post_id}"])
         con.execute("INSERT INTO Likes (post_id, user_id) values (?, ?)",
