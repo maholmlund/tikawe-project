@@ -60,7 +60,7 @@ def add_header(r):
 
 class Pager:
     def __init__(self, n_pages, current_page, link_base):
-        self.n_pages = n_pages
+        self.n_pages = n_pages if n_pages > 0 else 1
         self.current = current_page
         self.next_page_link = None
         if current_page < n_pages:
@@ -71,12 +71,8 @@ class Pager:
 
 
 @app.route("/", methods=["GET"])
-def front_page_redirect():
-    return redirect("/1")
-
-
 @app.route("/<int:page_id>", methods=["GET"])
-def index(page_id):
+def index(page_id=1):
     n_pages = int(ceil(Db().get_post_count() / ITEMS_PER_PAGE))
     pager = Pager(n_pages, page_id, "/")
     if g.user:
@@ -188,8 +184,11 @@ def like(post_id):
 
 
 @app.route("/comments/<post_id>", methods=["GET"])
-def comments(post_id):
-    comments = Db().get_comments(post_id)
+@app.route("/comments/<post_id>/<int:page_id>", methods=["GET"])
+def comments(post_id, page_id=1):
+    n_pages = int(ceil(Db().get_comment_count(post_id) / ITEMS_PER_PAGE))
+    pager = Pager(n_pages, page_id, f"/comments/{post_id}/")
+    comments = Db().get_comments(post_id, ITEMS_PER_PAGE, (page_id - 1) * ITEMS_PER_PAGE)
     form = CommentForm(request.form)
     if g.user:
         post = Db().get_post_by_id(
@@ -200,6 +199,7 @@ def comments(post_id):
                            post=post,
                            comments=comments,
                            commentform=form,
+                           pager=pager,
                            hide_link=True)
 
 

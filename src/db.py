@@ -218,9 +218,17 @@ class Db:
         query = """SELECT COUNT(id) FROM Likes WHERE post_id = ?"""
         return self.con.execute(query, [post_id]).fetchone()[0]
 
-    def get_comments(self, post_id):
-        query = "SELECT C.data, C.id, U.name FROM Comments C, Posts P, Users U WHERE P.id = C.post_id AND U.id = C.user_id AND P.id = ?"
-        results = self.con.execute(query, [post_id]).fetchall()
+    def get_comment_count(self, post_id):
+        query = "SELECT COUNT(id) FROM Comments WHERE post_id=?"
+        result = self.con.execute(query, [post_id]).fetchone()
+        return result[0]
+
+    def get_comments(self, post_id, limit, offset):
+        query = """SELECT C.data, C.id, U.name
+                   FROM Comments C, Posts P, Users U
+                   WHERE P.id = C.post_id AND U.id = C.user_id AND P.id = ?
+                   LIMIT ? OFFSET ?"""
+        results = self.con.execute(query, [post_id, limit, offset]).fetchall()
         comments = [Comment(x[0], x[1], x[2]) for x in results]
         return comments
 
