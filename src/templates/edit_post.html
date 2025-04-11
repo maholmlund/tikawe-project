@@ -2,7 +2,7 @@
 content %}
 <h1 class="page-title-left">Edit post</h1>
 <form method="POST" action="#">
-  <textarea name="data" id="data" rows="10" class="code-section" spellcheck="false" maxlength="2000">
+  <textarea name="data" id="data" rows="10" class="code-section" spellcheck="false" maxlength="1000">
 {{ postform.data }}</textarea>
   <br />
   {% for l in languages %} <input type="radio" id="language-{{ l }}" name="language" value="{{ l }}"
