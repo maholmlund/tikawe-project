@@ -166,7 +166,12 @@ class Db:
         self.con.execute(query, [id])
         self.con.commit()
 
-    def search_post_by_string(self, term, limit, user_id=None):
+    def get_search_match_count(self, term):
+        query = "SELECT COUNT(id) FROM Posts WHERE LOWER(data) LIKE ?"
+        result = self.con.execute(query, ["%" + term.lower() + "%"]).fetchone()
+        return result[0]
+
+    def search_post_by_string(self, term, limit, offset, user_id=None):
         if not term:
             term = ""
         if user_id:
@@ -178,9 +183,10 @@ class Db:
             LEFT JOIN Likes Z ON P.id = Z.post_id AND Z.user_id = ?
             WHERE LOWER(P.data) LIKE ? \
             GROUP BY P.id \
-            LIMIT ?"""
+            LIMIT ?\
+            OFFSET ?"""
             results = self.con.execute(
-                query, [user_id, "%" + term.lower() + "%", limit]).fetchall()
+                query, [user_id, "%" + term.lower() + "%", limit, offset]).fetchall()
             results = [Post(x[0], x[1], x[2], x[3], x[4], x[6], x[5] != 0)
                        for x in results]
         else:
@@ -191,9 +197,10 @@ class Db:
             LEFT JOIN Likes T ON T.post_id = P.id \
             WHERE LOWER(P.data) LIKE ? \
             GROUP BY P.id \
-            LIMIT ?"""
+            LIMIT ?\
+            OFFSET ?"""
             results = self.con.execute(
-                query, ["%" + term.lower() + "%", limit]).fetchall()
+                query, ["%" + term.lower() + "%", limit, offset]).fetchall()
             results = [Post(x[0], x[1], x[2], x[3], x[4], x[5])
                        for x in results]
         return results

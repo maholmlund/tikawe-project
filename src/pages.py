@@ -59,15 +59,17 @@ def add_header(r):
 
 
 class Pager:
-    def __init__(self, n_pages, current_page, link_base):
+    def __init__(self, n_pages, current_page, link_base, query=""):
         self.n_pages = n_pages if n_pages > 0 else 1
         self.current = current_page
         self.next_page_link = None
+        if len(query) != 0:
+            query = "?" + query
         if current_page < n_pages:
-            self.next_page_link = link_base + str(current_page + 1)
+            self.next_page_link = link_base + str(current_page + 1) + query
         self.prev_page_link = None
         if current_page > 1:
-            self.prev_page_link = link_base + str(current_page - 1)
+            self.prev_page_link = link_base + str(current_page - 1) + query
 
 
 @app.route("/", methods=["GET"])
@@ -160,17 +162,22 @@ def delete(post_id):
 
 
 @app.route("/search", methods=["GET"])
-def search():
+@app.route("/search/<int:page_id>", methods=["GET"])
+def search(page_id=1):
     term = request.args.get("query")
     if g.user:
         posts = Db().search_post_by_string(
-            term, 20, g.user.id)
+            term, ITEMS_PER_PAGE, (page_id - 1) * ITEMS_PER_PAGE, g.user.id)
     else:
-        posts = Db().search_post_by_string(term, 20)
+        posts = Db().search_post_by_string(
+            term, ITEMS_PER_PAGE, (page_id - 1) * ITEMS_PER_PAGE)
     query = request.query_string.decode("utf-8")
+    n_pages = int(ceil(Db().get_search_match_count(term) / ITEMS_PER_PAGE))
+    pager = Pager(n_pages, page_id, f"/search/", query)
     return render_template("search.html",
                            posts=posts,
                            request=request,
+                           pager=pager,
                            query=query)
 
 
