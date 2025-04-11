@@ -28,3 +28,6 @@ CREATE TABLE Comments (
         post_id INTEGER REFERENCES Posts ON DELETE CASCADE,
         data TEXT
 );
+
+CREATE INDEX comment_post_id ON Comments (post_id);
+CREATE INDEX like_post_id ON Likes (post_id);
