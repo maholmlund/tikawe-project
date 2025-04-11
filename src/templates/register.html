@@ -2,17 +2,35 @@
 content %}
 <h1>Create new account</h1>
 <form action="/register" method="POST">
-  <label for="username">Username: </label>
-  <input id="username" name="username" type="text" value="{{registrationform.username}}" />
-  <br />
-  <label for="password1">Password</label>
-  <input id="password1" name="password1" type="password" value="{{registrationform.password1}}" />
-  <br />
-  <label for="password2">Retype password</label>
-  <input id="password2" name="password2" type="password" value="{{registrationform.password2}}" />
-  <br />
+  <table class="form-table">
+    <tr>
+      <th>
+        <label for="username">Username: </label>
+      </th>
+      <td>
+        <input id="username" name="username" type="text" value="{{registrationform.username}}" />
+      </td>
+    </tr>
+    <tr>
+      <th>
+        <label for="password1">Password</label>
+      </th>
+      <td>
+        <input id="password1" name="password1" type="password" value="{{registrationform.password1}}" />
+      </td>
+    </tr>
+    <tr>
+      <th>
+        <label for="password2">Retype password</label>
+      </th>
+      <td>
+        <input id="password2" name="password2" type="password" value="{{registrationform.password2}}" />
+      </td>
+    </tr>
+
+  </table>
   <input type="hidden" name="csrf_token" value="{{session.csrf_token}}" />
-  <button>Create</button>
+  <button class="basic-button">Create</button>
 </form>
 {% for msg in registrationform.errors %}
 <p>Error: {{msg}}</p>
