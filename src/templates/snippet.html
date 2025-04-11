@@ -1,7 +1,7 @@
 <div class="post-container" id="post-{{ post.id }}">
-	<div class="code-section">
-		<p>{{ post.data | show_lines }}</p>
-	</div>
+  <div class="code-section">
+    <p>{{ post.data | show_lines }}</p>
+  </div>
   <div class="post-data-section">
     <div class="post-left">
       <a class="basic-button" href="/user/{{ post.username }}">{{ post.username }}</a>
@@ -29,22 +29,22 @@
       {% if g.user %}
       <form action="/like/{{ post.id }}" method="POST" class="like-form">
         <input type="hidden" name="csrf_token" value="{{session.csrf_token}}">
-      {% else %}
-      <form action="/login" method="GET" class="like-form">
-      {% endif %}
-        <input type="hidden" name="next" value="{{ request.path }}" />
-        {% if query %}
-        <input type="hidden" name="query" value="{{ query }}" />
-        {% endif %}
-        <button class="like-button">
-          <p>{{ post.likes }}</p>
-          {% if post.liked %}
-          <img src="/static/heart_red.svg" alt="heart" />
-          {% else %}
-          <img src="/static/heart_white.svg" alt="heart" />
+        {% else %}
+        <form action="/login" method="GET" class="like-form">
           {% endif %}
-        </button>
-      </form>
+          <input type="hidden" name="next" value="{{ request.path }}" />
+          {% if query %}
+          <input type="hidden" name="query" value="{{ query }}" />
+          {% endif %}
+          <button class="like-button">
+            <p>{{ post.likes }}</p>
+            {% if post.liked %}
+            <img src="/static/heart_red.svg" alt="heart" />
+            {% else %}
+            <img src="/static/heart_white.svg" alt="heart" />
+            {% endif %}
+          </button>
+        </form>
     </div>
   </div>
 </div>

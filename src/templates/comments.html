@@ -5,15 +5,15 @@ content %}
 <hr />
 {% if g.user %}
 <div>
-	<h2>New comment</h2>
-	<form action="/new_comment/{{ post.id }}" method="post">
-		<input type="text" name="data" id="" />
-		<input type="hidden" name="csrf_token" value="{{session.csrf_token}}" />
-		<button>Submit</button>
-	</form>
-	{% for msg in commentform.errors %}
-	<p>{{msg}}</p>
-	{% endfor %}
+  <h2>New comment</h2>
+  <form action="/new_comment/{{ post.id }}" method="post">
+    <input type="text" name="data" id="" />
+    <input type="hidden" name="csrf_token" value="{{session.csrf_token}}" />
+    <button>Submit</button>
+  </form>
+  {% for msg in commentform.errors %}
+  <p>{{msg}}</p>
+  {% endfor %}
 </div>
 {% endif %} {% for comment in comments %} {% include 'comment.html' %} {% endfor
 %} {% endblock %}

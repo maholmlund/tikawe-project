@@ -2,19 +2,17 @@
 content %}
 <h1>Create new post</h1>
 <form method="POST" action="/post">
-	<textarea name="data" id="data" rows="10" cols="80" maxlength="2000">
+  <textarea name="data" id="data" rows="10" cols="80" maxlength="2000">
       {{postform.data}}
-      </textarea
-	>
-	<br />
-	{% for l in languages %} <input type="radio" id="language-{{ l }}"
-	name="language" value="{{ l }}" {% if l == postform.language %} checked {%
-	endif %} />
-	<label for="language-{{ l }}">{{ l }}</label>
-	<br />
-	{% endfor %}
-	<input type="hidden" name="csrf_token" value="{{session.csrf_token}}" />
-	<button>Submit</button>
+      </textarea>
+  <br />
+  {% for l in languages %} <input type="radio" id="language-{{ l }}" name="language" value="{{ l }}" {% if
+    l==postform.language %} checked {% endif %} />
+  <label for="language-{{ l }}">{{ l }}</label>
+  <br />
+  {% endfor %}
+  <input type="hidden" name="csrf_token" value="{{session.csrf_token}}" />
+  <button>Submit</button>
 </form>
 {% for msg in postform.errors %}
 <p>Error: {{ msg }}</p>
