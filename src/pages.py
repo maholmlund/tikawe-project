@@ -76,6 +76,8 @@ class Pager:
 @app.route("/<int:page_id>", methods=["GET"])
 def index(page_id=1):
     n_pages = int(ceil(Db().get_post_count() / ITEMS_PER_PAGE))
+    if page_id > n_pages:
+        abort(404)
     pager = Pager(n_pages, page_id, "/")
     if g.user:
         posts = Db().get_posts(ITEMS_PER_PAGE, (page_id - 1) * ITEMS_PER_PAGE, g.user.id)
@@ -136,6 +138,8 @@ def post():
 def edit(post_id):
     form = PostForm(request.form)
     target_post = Db().get_post_by_id(post_id)
+    if not target_post:
+        abort(404)
     if target_post.username != g.user.username:
         return "invalid user", 403
     if request.method == "POST":
@@ -155,6 +159,8 @@ def edit(post_id):
 @login_required
 def delete(post_id):
     post = Db().get_post_by_id(post_id)
+    if not post:
+        abort(404)
     if post.username != g.user.username:
         return "invalid user", 403
     Db().delete_post_by_id(post_id)
@@ -173,6 +179,8 @@ def search(page_id=1):
             term, ITEMS_PER_PAGE, (page_id - 1) * ITEMS_PER_PAGE)
     query = request.query_string.decode("utf-8")
     n_pages = int(ceil(Db().get_search_match_count(term) / ITEMS_PER_PAGE))
+    if page_id > n_pages:
+        abort(404)
     pager = Pager(n_pages, page_id, f"/search/", query)
     return render_template("search.html",
                            posts=posts,
@@ -185,6 +193,8 @@ def search(page_id=1):
 @login_required
 def like(post_id):
     form = LikeForm(request.form)
+    if not Db().get_post_by_id(post_id):
+        abort(404)
     Db().toggle_like(post_id, g.user.id)
     # I wish we could do this using javascript...
     return redirect(form.next + form.query + f"#post-{post_id}")
@@ -194,6 +204,8 @@ def like(post_id):
 @app.route("/comments/<post_id>/<int:page_id>", methods=["GET"])
 def comments(post_id, page_id=1):
     n_pages = int(ceil(Db().get_comment_count(post_id) / ITEMS_PER_PAGE))
+    if not Db().get_post_by_id(post_id) or page_id > n_pages:
+        abort(404)
     pager = Pager(n_pages, page_id, f"/comments/{post_id}/")
     comments = Db().get_comments(post_id, ITEMS_PER_PAGE, (page_id - 1) * ITEMS_PER_PAGE)
     form = CommentForm(request.form)
@@ -236,6 +248,8 @@ def user_page(username, page_id=1):
         abort(404)
     post_count = Db().get_user_post_count(target_user.id)
     n_pages = int(ceil(post_count / ITEMS_PER_PAGE))
+    if page_id > n_pages:
+        abort(404)
     pager = Pager(n_pages, page_id, f"/user/{username}/")
     if "username" in session:
         posts = Db().get_posts_by_user_id(
