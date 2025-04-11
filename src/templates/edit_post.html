@@ -2,16 +2,16 @@
 content %}
 <h1>Edit post</h1>
 <form method="POST" action="#">
-  <textarea name="data" id="data" rows="10" cols="80" maxlength="2000">
+  <textarea name="data" id="data" rows="10" class="code-section" spellcheck="false" maxlength="2000">
 {{ postform.data }}</textarea>
   <br />
-  {% for l in languages %} <input type="radio" id="language-{{ l }}" name="language" value="{{ l }}" {% if
-    l==postform.language %} checked {% endif %} />
+  {% for l in languages %} <input type="radio" id="language-{{ l }}" name="language" value="{{ l }}"
+    class="language-radio" {% if l==postform.language %} checked {% endif %} />
   <label for="language-{{ l }}">{{ l }}</label>
   <br />
   {% endfor %}
   <input type="hidden" name="csrf_token" value="{{session.csrf_token}}" />
-  <button>Update</button>
+  <button class="basic-button">Update</button>
 </form>
 {% for msg in postform.errors %}
 <p>{{ msg }}</p>
