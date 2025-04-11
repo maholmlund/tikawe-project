@@ -1,6 +1,6 @@
 {% extends 'base.html' %} {% block title %}New post{% endblock %} {% block
 content %}
-<h1>Create new post</h1>
+<h1 class="page-title-left">Create new post</h1>
 <form method="POST" action="/post">
   <textarea name="data" id="data" rows="10" maxlength="2000" spellcheck="false"
     class="code-section">{{postform.data}}</textarea>

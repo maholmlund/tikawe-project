@@ -1,6 +1,7 @@
 {% extends 'base.html' %} {% block title %}{{target_user.username}}{% endblock
 %} {% block content %}
-<h1>{{ target_user }}</h1>
-<p>Number of posts: {{ post_count }}</p>
-<hr />
+<h1 class="page-title-center">{{ target_user }}</h1>
+<p style="text-align: center;">Number of posts: {{ post_count }}</p>
+<br>
+<br>
 {% for post in posts %} {% include 'snippet.html' %} {% endfor %} {% endblock %}

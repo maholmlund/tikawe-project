@@ -147,3 +147,12 @@ nav {
 .language-radio {
   margin: 0.4em;
 }
+
+.page-title-center {
+  text-align: center;
+  margin-bottom: 1em;
+}
+
+.page-title-left {
+  margin-bottom: 1em;
+}
