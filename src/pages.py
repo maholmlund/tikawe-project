@@ -227,20 +227,27 @@ def new_comment(post_id):
 
 
 @app.route("/user/<username>", methods=["GET"])
-def user_page(username):
+@app.route("/user/<username>/<int:page_id>", methods=["GET"])
+def user_page(username, page_id=1):
     target_user = Db().get_user_by_username(username)
     post_count = Db().get_user_post_count(target_user.id)
+    n_pages = int(ceil(post_count / ITEMS_PER_PAGE))
+    pager = Pager(n_pages, page_id, f"/user/{username}/")
     if "username" in session:
         posts = Db().get_posts_by_user_id(
             target_user.id,
-            20,
+            ITEMS_PER_PAGE,
+            (page_id - 1) * ITEMS_PER_PAGE,
             current_user_id=g.user.id)
         return render_template("user.html",
                                target_user=username,
                                post_count=post_count,
+                               pager=pager,
                                posts=posts)
-    posts = Db().get_posts_by_user_id(target_user.id, 20)
+    posts = Db().get_posts_by_user_id(target_user.id,
+                                      ITEMS_PER_PAGE, (page_id - 1) * ITEMS_PER_PAGE)
     return render_template("user.html",
                            target_user=username,
                            post_count=post_count,
+                           pager=pager,
                            posts=posts)

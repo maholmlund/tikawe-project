@@ -127,7 +127,7 @@ class Db:
                 return Post(results[0], results[1], results[2], results[3], results[4], results[5])
         return None
 
-    def get_posts_by_user_id(self, user_id, limit, current_user_id=None):
+    def get_posts_by_user_id(self, user_id, limit, offset, current_user_id=None):
         if user_id:
             query = """SELECT P.data, L.name, U.name, P.id, COUNT(T.id), COUNT(Z.id), \
             (SELECT COUNT(C.id) FROM Comments C WHERE C.post_id = P.id) FROM \
@@ -137,9 +137,10 @@ class Db:
             LEFT JOIN Likes Z ON P.id = Z.post_id AND Z.user_id = ?
             WHERE U.id = ? \
             GROUP BY P.id \
-            LIMIT ?"""
+            LIMIT ?\
+            OFFSET ?"""
             results = self.con.execute(
-                query, [current_user_id, user_id, limit]).fetchall()
+                query, [current_user_id, user_id, limit, offset]).fetchall()
             results = [Post(x[0], x[1], x[2], x[3], x[4], x[6], x[5] != 0)
                        for x in results]
         else:
@@ -150,8 +151,10 @@ class Db:
             LEFT JOIN Likes T ON T.post_id = P.id \
             WHERE U.id = ?
             GROUP BY P.id \
-            LIMIT ?"""
-            results = self.con.execute(query, [user_id, limit]).fetchall()
+            LIMIT ?\
+            OFFSET ?"""
+            results = self.con.execute(
+                query, [user_id, limit, offset]).fetchall()
             results = [Post(x[0], x[1], x[2], x[3], x[4], x[5])
                        for x in results]
         return results

@@ -4,4 +4,4 @@
 <p style="text-align: center;">Number of posts: {{ post_count }}</p>
 <br>
 <br>
-{% for post in posts %} {% include 'snippet.html' %} {% endfor %} {% endblock %}
+{% for post in posts %} {% include 'snippet.html' %} {% endfor %} {% include 'pager.html' %} {% endblock %}
