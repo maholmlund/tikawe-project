@@ -1,41 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>{% block title %}{% endblock %}</title>
-		<link rel="stylesheet" href="/static/index.css" />
-	</head>
-	<body>
-		<nav>
-			<div class="nav-left">
-				<a href="/">
-					<h1>Snippet Share</h1>
-				</a>
-			</div>
-			<div class="nav-right">
-				<div class="search-section">
-					<form action="/search" method="GET">
-						<label for="query">Search: </label>
-						<input id="query" name="query" type="text" />
-					</form>
-				</div>
-				<div class="user-section">
-					{% if g.user %}
-					<p>Logged in as {{g.user.username}}</p>
-					<form method="post" action="/logout">
-						<input type="hidden" name="csrf_token"
-						value="{{session.csrf_token}}"">
-						<button>Log Out</button>
-					</form>
-					<a href="/post">New post</a>
-					{% else %}
-					<a href="/login">Log in</a>
-					<a href="/register">Create new user</a>
-					{% endif %}
-				</div>
-			</div>
-		</nav>
-		<div class="content">{% block content %} {% endblock %}</div>
-	</body>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}{% endblock %}</title>
+  <link rel="stylesheet" href="/static/index.css" />
+</head>
+
+<body>
+  <nav>
+    <div class="nav-left">
+      <a href="/">
+        <h1>Snippet Share</h1>
+      </a>
+    </div>
+    <div class="nav-right">
+      <form action="/search" method="GET" class="search-field">
+        <label for="query">Search: </label>
+        <input id="query" name="query" type="text" />
+      </form>
+      {% if g.user %}
+      <form method="post" action="/logout" class="button-form">
+        <input type="hidden" name="csrf_token" value="{{session.csrf_token}}" />
+        <button class="basic-button">Log Out</button>
+      </form>
+      <a href="/post" class="basic-button">New post</a>
+      <a href="/user/{{g.user.username}}" class="basic-button">{{g.user.username}}</a>
+      {% else %}
+      <a href="/login" class="basic-button">Log in</a>
+      <a href="/register" class="basic-button">Create new user</a>
+      {% endif %}
+    </div>
+  </nav>
+  <div class="content">{% block content %} {% endblock %}</div>
+</body>
+
 </html>

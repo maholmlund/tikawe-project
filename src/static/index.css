@@ -1,8 +1,8 @@
 * {
-	margin: 0;
-	padding: 0;
-	box-sizing: border-box;
-	color: white;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  color: white;
   font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -12,57 +12,72 @@ button {
 }
 
 html {
-	background-color: rgb(41, 41, 41);
+  background-color: rgb(41, 41, 41);
 }
 
 a {
-	text-decoration: none;
+  text-decoration: none;
+}
+
+input {
+  color: black;
+}
+
+textarea {
+  color: black;
 }
 
 .content {
-	background-color: rgb(83, 83, 83);
-	max-width: 40rem;
-	margin-left: auto;
-	margin-right: auto;
+  background-color: rgb(83, 83, 83);
+  max-width: 40rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 2em;
 }
 
 .basic-button {
   padding: 0.4em;
-	background-color: transparent;
+  background-color: transparent;
   border: 0.1em solid black;
   border-radius: 1em;
   min-width: 4rem;
   font-size: medium;
   text-align: center;
   display: inline-block;
+  margin: 0.2em;
+  height: 2rem;
 }
 
 .icon-button {
   align-items: center;
   padding: 0.4em;
   border: none;
-	background-color: transparent;
+  background-color: transparent;
   min-width: 4rem;
   font-size: medium;
   text-align: center;
   display: inline-block;
 }
 
+.button-form {
+  display: inline-block;
+}
+
 .post-container {
-	margin-left: auto;
-	margin-right: auto;
-	border: 0.1em solid black;
-	border-radius: 1em;
-	margin-bottom: 1em;
-	padding: 1em;
-	max-width: 30rem;
+  margin-left: auto;
+  margin-right: auto;
+  border: 0.1em solid black;
+  border-radius: 1em;
+  margin-bottom: 1em;
+  padding: 1em;
+  max-width: 30rem;
 }
 
 .code-section {
-	font-family: monospace;
-	background-color: rgb(37, 37, 37);
-	border-radius: 0.6em;
-	padding: 0.8em;
+  font-family: monospace;
+  background-color: rgb(37, 37, 37);
+  border-radius: 0.6em;
+  padding: 0.8em;
 }
 
 .post-data-section {
@@ -78,7 +93,6 @@ a {
 }
 
 .post-user-actions {
-  margin-right: 1rem;
   display: flex;
   flex-direction: row;
 }
@@ -104,25 +118,23 @@ a {
 }
 
 nav {
-	display: flex;
-	flex-direction: row;
-	height: 4rem;
-	justify-content: space-between;
-	background-color: rgb(220, 127, 155);
+  display: flex;
+  flex-direction: row;
+  height: 4rem;
+  justify-content: space-between;
+  background-color: rgb(220, 127, 155);
 }
 
 .nav-left {
-	margin: 1rem;
+  margin: 1rem;
 }
 
 .nav-right {
-	display: flex;
+  display: flex;
+  margin: 0.4em;
+  align-items: center;
 }
 
-.user-section {
-	margin: 1rem;
-}
-
-.search-section {
-	margin: 1rem;
+.search-field {
+  margin-right: 3em;
 }
