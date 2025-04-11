@@ -2,17 +2,30 @@
 %}
 <h1>Login</h1>
 <form method="POST" action="/login">
-  <label for="username">Username: </label>
-  <input id="username" name="username" type="text" value="{{loginform.username}}" />
-  <br />
-  <label for="password">Password: </label>
-  <input id="password" name="password" type="password" value="{{loginform.password}}" />
-  <br />
+  <table class="form-table">
+    <tr>
+      <th>
+        <label for="username">Username: </label>
+
+      </th>
+      <th>
+        <input id="username" name="username" type="text" value="{{loginform.username}}" />
+      </th>
+    </tr>
+    <tr>
+      <th>
+        <label for="password">Password: </label>
+      </th>
+      <th>
+        <input id="password" name="password" type="password" value="{{loginform.password}}" />
+      </th>
+    </tr>
+  </table>
   {% if next %}
   <input type="hidden" name="next" value="{{ next }}" />
   {% endif %}
   <input type="hidden" name="csrf_token" value="{{session.csrf_token}}" />
-  <button type="submit">Login</button>
+  <button type="submit" class="basic-button">Login</button>
 </form>
 {% for msg in loginform.errors %}
 <p>{{ msg }}</p>

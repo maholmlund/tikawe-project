@@ -138,3 +138,9 @@ nav {
 .search-field {
   margin-right: 3em;
 }
+
+.form-table th {
+  padding-right: 1em;
+  padding-bottom: 0.4em;
+  padding-top: 0.4em;
+}
