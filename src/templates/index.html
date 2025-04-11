@@ -1,4 +1,4 @@
 {% extends 'base.html' %} {% block title %}Snippet Share{% endblock %} {% block
 content %}
 <h1 class="page-title-center">Feed</h1>
-{% for post in posts %} {% include 'snippet.html' %} {% endfor %} {% endblock %}
+{% for post in posts %} {% include 'snippet.html' %} {% endfor %} {% include 'pager.html' %} {% endblock %}

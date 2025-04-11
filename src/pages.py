@@ -1,5 +1,6 @@
 from sqlite3 import IntegrityError
 from functools import wraps
+from math import ceil
 import markupsafe
 from flask import Flask, request, redirect, session, g, abort
 from flask import render_template, url_for
@@ -11,6 +12,8 @@ from secrets import token_hex
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
+
+ITEMS_PER_PAGE = 20
 
 
 @app.template_filter()
@@ -55,13 +58,32 @@ def add_header(r):
     return r
 
 
+class Pager:
+    def __init__(self, n_pages, current_page, link_base):
+        self.n_pages = n_pages
+        self.current = current_page
+        self.next_page_link = None
+        if current_page < n_pages:
+            self.next_page_link = link_base + str(current_page + 1)
+        self.prev_page_link = None
+        if current_page > 1:
+            self.prev_page_link = link_base + str(current_page - 1)
+
+
 @app.route("/", methods=["GET"])
-def index():
+def front_page_redirect():
+    return redirect("/1")
+
+
+@app.route("/<int:page_id>", methods=["GET"])
+def index(page_id):
+    n_pages = int(ceil(Db().get_post_count() / ITEMS_PER_PAGE))
+    pager = Pager(n_pages, page_id, "/")
     if g.user:
-        posts = Db().get_posts(60, g.user.id)
+        posts = Db().get_posts(ITEMS_PER_PAGE, (page_id - 1) * ITEMS_PER_PAGE, g.user.id)
     else:
-        posts = Db().get_posts(60)
-    return render_template("index.html", posts=posts, request=request)
+        posts = Db().get_posts(ITEMS_PER_PAGE, (page_id - 1) * ITEMS_PER_PAGE)
+    return render_template("index.html", posts=posts, request=request, pager=pager)
 
 
 @app.route("/login", methods=["GET", "POST"])
