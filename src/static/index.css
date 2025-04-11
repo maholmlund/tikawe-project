@@ -23,10 +23,6 @@ input {
   color: black;
 }
 
-textarea {
-  color: black;
-}
-
 .content {
   background-color: rgb(83, 83, 83);
   max-width: 40rem;
@@ -78,6 +74,8 @@ textarea {
   background-color: rgb(37, 37, 37);
   border-radius: 0.6em;
   padding: 0.8em;
+  width: 100%;
+  border: none;
 }
 
 .post-data-section {
@@ -144,4 +142,8 @@ nav {
   padding-bottom: 0.4em;
   padding-top: 0.4em;
   text-align: right;
+}
+
+.language-radio {
+  margin: 0.4em;
 }
