@@ -5,11 +5,10 @@ content %}
 <hr />
 {% if g.user %}
 <div>
-  <h2>New comment</h2>
-  <form action="/new_comment/{{ post.id }}" method="post">
-    <input type="text" name="data" id="" />
+  <form action="/new_comment/{{ post.id }}" method="post" class="new-comment-container">
+    <input type="text" name="data" id="" placeholder="New comment" />
     <input type="hidden" name="csrf_token" value="{{session.csrf_token}}" />
-    <button>Submit</button>
+    <button class="basic-button">Submit</button>
   </form>
   {% for msg in commentform.errors %}
   <p>{{msg}}</p>

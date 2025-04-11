@@ -1,4 +1,4 @@
-<div>
-  <p>{{ comment.username }}</p>
-  <p>{{ comment.data }}</p>
+<div class="comment-container">
+  <p class="comment-text">{{ comment.data }}</p>
+  <a href="/user/{{comment.username}}" class="basic-button">{{comment.username}}</a>
 </div>

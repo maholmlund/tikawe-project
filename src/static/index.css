@@ -156,3 +156,20 @@ nav {
 .page-title-left {
   margin-bottom: 1em;
 }
+
+.new-comment-container {
+  margin: 1em;
+}
+
+.comment-container {
+  margin-left: auto;
+  margin-right: auto;
+  border: 0.1em solid black;
+  border-radius: 1em;
+  margin-bottom: 1em;
+  padding: 1em;
+}
+
+.comment-text {
+  padding: 0.4em;
+}
