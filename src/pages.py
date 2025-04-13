@@ -42,6 +42,12 @@ def add_user():
 
 
 @app.before_request
+def add_csrf_token():
+    if "csrf_token" not in session:
+        session["csrf_token"] = token_hex(16)
+
+
+@app.before_request
 def check_csrf():
     if request.method == "POST":
         if ("csrf_token" not in request.form or
@@ -59,13 +65,17 @@ def add_header(r):
 
 
 class Pager:
-    def __init__(self, n_pages, current_page, link_base, query=""):
-        self.n_pages = n_pages if n_pages > 0 else 1
+    def __init__(self, n_items, current_page, link_base, query=""):
+        self.n_pages = int(ceil(n_items / ITEMS_PER_PAGE))
+        if self.n_pages == 0:
+            self.n_pages = 1
+        if current_page > self.n_pages:
+            abort(404)
         self.current = current_page
         self.next_page_link = None
         if len(query) != 0:
             query = "?" + query
-        if current_page < n_pages:
+        if current_page < self.n_pages:
             self.next_page_link = link_base + str(current_page + 1) + query
         self.prev_page_link = None
         if current_page > 1:
@@ -75,10 +85,7 @@ class Pager:
 @app.route("/", methods=["GET"])
 @app.route("/<int:page_id>", methods=["GET"])
 def index(page_id=1):
-    n_pages = int(ceil(Db().get_post_count() / ITEMS_PER_PAGE))
-    if page_id > n_pages:
-        abort(404)
-    pager = Pager(n_pages, page_id, "/")
+    pager = Pager(Db().get_post_count(), page_id, "/")
     if g.user:
         posts = Db().get_posts(ITEMS_PER_PAGE, (page_id - 1) * ITEMS_PER_PAGE, g.user.id)
     else:
@@ -93,7 +100,6 @@ def login():
         user = Db().get_user_by_username(form.username)
         if user and check_password_hash(user.pwd_hash, form.password):
             session["username"] = user.username
-            session["csrf_token"] = token_hex(16)
             return redirect(form.next)
         else:
             form.errors.append("username and password do not match")
@@ -171,17 +177,15 @@ def delete(post_id):
 @app.route("/search/<int:page_id>", methods=["GET"])
 def search(page_id=1):
     term = request.args.get("query")
+    query = request.query_string.decode("utf-8")
+    pager = Pager(Db().get_search_match_count(
+        term), page_id, f"/search/", query)
     if g.user:
         posts = Db().search_post_by_string(
             term, ITEMS_PER_PAGE, (page_id - 1) * ITEMS_PER_PAGE, g.user.id)
     else:
         posts = Db().search_post_by_string(
             term, ITEMS_PER_PAGE, (page_id - 1) * ITEMS_PER_PAGE)
-    query = request.query_string.decode("utf-8")
-    n_pages = int(ceil(Db().get_search_match_count(term) / ITEMS_PER_PAGE))
-    if page_id > n_pages:
-        abort(404)
-    pager = Pager(n_pages, page_id, f"/search/", query)
     return render_template("search.html",
                            posts=posts,
                            request=request,
@@ -203,10 +207,11 @@ def like(post_id):
 @app.route("/comments/<post_id>", methods=["GET"])
 @app.route("/comments/<post_id>/<int:page_id>", methods=["GET"])
 def comments(post_id, page_id=1):
-    n_pages = int(ceil(Db().get_comment_count(post_id) / ITEMS_PER_PAGE))
-    if not Db().get_post_by_id(post_id) or page_id > n_pages:
+    n_comments = Db().get_comment_count(post_id)
+    if n_comments is None:
         abort(404)
-    pager = Pager(n_pages, page_id, f"/comments/{post_id}/")
+    pager = Pager(Db().get_comment_count(post_id),
+                  page_id, f"/comments/{post_id}/")
     comments = Db().get_comments(post_id, ITEMS_PER_PAGE, (page_id - 1) * ITEMS_PER_PAGE)
     form = CommentForm(request.form)
     if g.user:
@@ -247,10 +252,7 @@ def user_page(username, page_id=1):
     if not target_user:
         abort(404)
     post_count = Db().get_user_post_count(target_user.id)
-    n_pages = int(ceil(post_count / ITEMS_PER_PAGE))
-    if page_id > n_pages:
-        abort(404)
-    pager = Pager(n_pages, page_id, f"/user/{username}/")
+    pager = Pager(post_count, page_id, f"/user/{username}/")
     if "username" in session:
         posts = Db().get_posts_by_user_id(
             target_user.id,
