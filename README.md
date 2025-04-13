@@ -1,7 +1,7 @@
 # Koodinpätkien jakaminen
 
-Sovelluksessä käyttäjät pystyvät:
-
+## Sovelluksen nykytila
+Käyttäjä pystyy:
 - Luomaan tunnuksen
 - Kirjautumaan sisään
 - Julkaisemaan uuden lyhyen koodinpätkän (max n. 20 riviä)
@@ -9,7 +9,7 @@ Sovelluksessä käyttäjät pystyvät:
 - Näkemään toisten käyttäjien julkaisuja
 - Tykkäämään ja kommentoimaan toisten julkaisuja
 - Poistamaan oman julkaisunsa
-- Hakemaan julkaisuja ainakin tekijän ja hakusanan perusteella
+- Hakemaan julkaisuja hakusanan perusteella
 - Tarkastelemaan käyttäjien profiileja ja näkemään julkaisut, niiden määrä, yms.
 - Näkemään julkaisujen kommentit ja tykkäysten määrät
 
@@ -33,6 +33,6 @@ Suorita sovellus:
 $ flask --app src/pages.py run
 ```
 
-Tietokannan alustus luo järjestelmään valmiiksi joitakin postauksia. Lisäksi luodaan käyttäjät hertta, perttu, miika, inka ja rene. Kaikkien näiden salasana on "salasana".
+Tietokannan alustus luo järjestelmään valmiiksi suuren määrän käyttäjiä, postauksia, tykkäyksiä ja kommentteja. Tietokannan alustuksessa voi kestää yli minuutti heikoimmilla koneilla. Kaikkien käyttäjäien käyttäjänimet ovat muotoa userX ja salasana "salasana".
 
 SVG-kuvat: [tablericons.com](https://tablericons.com)
