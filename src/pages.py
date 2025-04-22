@@ -2,7 +2,7 @@ from sqlite3 import IntegrityError
 from functools import wraps
 from math import ceil
 import markupsafe
-from flask import Flask, request, redirect, session, g, abort
+from flask import Flask, request, redirect, session, g, abort, flash
 from flask import render_template, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
 from db import Db
@@ -111,12 +111,8 @@ def login():
             else:
                 return redirect("/")
         else:
-            form.errors.append("username and password do not match")
-    next_url = request.args.get("next")
-    if next_url:
-        next_url += "?" + \
-            request.args["query"] if "query" in request.args else ""
-    return render_template("login.html", loginform=form, next=next_url)
+            flash("username and password do not match", "error")
+    return render_template("login.html", loginform=form)
 
 
 @app.route("/logout", methods=["POST"])
@@ -248,14 +244,7 @@ def new_comment(post_id):
     form = CommentForm(request.form)
     if form.validate():
         Db().create_comment(form.data, g.user.id, post_id)
-        return redirect("/comments/" + post_id)
-    post = Db().get_post_by_id(post_id)
-    comments = Db().get_comments(post_id)
-    return render_template("comments.html",
-                           post=post,
-                           comments=comments,
-                           hide_link=True,
-                           commentform=form)
+    return redirect("/comments/" + post_id)
 
 
 @app.route("/user/<username>", methods=["GET"])

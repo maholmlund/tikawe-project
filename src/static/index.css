@@ -185,3 +185,11 @@ nav {
   justify-content: center;
   margin-top: 2em;
 }
+
+.error_msg {
+  display: block;
+  background-color: rgb(255, 91, 91);
+  padding: 0.4em;
+  margin: 0.4em;
+  border-radius: 0.2em;
+}

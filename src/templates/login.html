@@ -24,6 +24,6 @@
   <input type="hidden" name="csrf_token" value="{{session.csrf_token}}" />
   <button type="submit" class="basic-button">Login</button>
 </form>
-{% for msg in loginform.errors %}
-<p>{{ msg }}</p>
+{% for msg in get_flashed_messages(category_filter=["error"]) %}
+<p class="error_msg">Error: {{ msg }}</p>
 {% endfor %} {% endblock %}

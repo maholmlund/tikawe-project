@@ -13,6 +13,6 @@ content %}
   <input type="hidden" name="csrf_token" value="{{session.csrf_token}}" />
   <button class="basic-button">Submit</button>
 </form>
-{% for msg in postform.errors %}
-<p>Error: {{ msg }}</p>
+{% for msg in get_flashed_messages(category_filter=["error"]) %}
+<p class="error_msg">Error: {{ msg }}</p>
 {% endfor %} {% endblock %}
