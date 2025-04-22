@@ -144,6 +144,8 @@ def post():
         if form.validate():
             language_id = Db().get_language_id(form.language)
             Db().create_post(form.data, language_id, g.user.id)
+            if "next_page" in session:
+                return redirect(session["next_page"])
             return redirect("/")
     return render_template("post.html", postform=form, languages=Db().get_languages())
 
