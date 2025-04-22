@@ -231,6 +231,9 @@ class Db:
     def get_comment_count(self, post_id):
         query = "SELECT COUNT(id) FROM Comments WHERE post_id=?"
         result = self.con.execute(query, [post_id]).fetchone()
+        test_query = "SELECT id FROM Posts WHERE id=?"
+        if len(self.con.execute(test_query, [post_id]).fetchall()) == 0:
+            return None
         return result[0]
 
     def get_comments(self, post_id, limit, offset):
