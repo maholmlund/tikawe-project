@@ -1,11 +1,14 @@
-{% extends 'base.html' %} {% block title %}Edit post{% endblock %} {% block
-content %}
+{% extends 'base.html' %}
+{% block title %}Edit post{% endblock %}
+
+{% block content %}
 <h1 class="page-title-left">Edit post</h1>
 <form method="POST" action="#">
   <textarea name="data" id="data" rows="10" class="code-section" spellcheck="false" maxlength="1000">
 {{ postform.data }}</textarea>
   <br />
-  {% for l in languages %} <input type="radio" id="language-{{ l }}" name="language" value="{{ l }}"
+  {% for l in languages %}
+  <input type="radio" id="language-{{ l }}" name="language" value="{{ l }}"
     class="language-radio" {% if l==postform.language %} checked {% endif %} />
   <label for="language-{{ l }}">{{ l }}</label>
   <br />
@@ -15,4 +18,5 @@ content %}
 </form>
 {% for msg in get_flashed_messages(category_filter=["error"]) %}
 <p class="error_msg">Error: {{ msg }}</p>
-{% endfor %} {% endblock %}
+{% endfor %}
+{% endblock %}

@@ -29,16 +29,16 @@
       {% if g.user %}
       <form action="/like/{{ post.id }}" method="POST" class="like-form">
         <input type="hidden" name="csrf_token" value="{{session.csrf_token}}">
-        {% else %}
-        <form action="/login" method="GET" class="like-form">
+      {% else %}
+      <form action="/login" method="GET" class="like-form">
+       {% endif %}
+        <button class="like-button">
+          <p>{{ post.likes }}</p>
+          {% if post.liked %}
+          <img src="/static/heart_red.svg" alt="heart" />
+          {% else %}
+          <img src="/static/heart_white.svg" alt="heart" />
           {% endif %}
-          <button class="like-button">
-            <p>{{ post.likes }}</p>
-            {% if post.liked %}
-            <img src="/static/heart_red.svg" alt="heart" />
-            {% else %}
-            <img src="/static/heart_white.svg" alt="heart" />
-            {% endif %}
           </button>
         </form>
     </div>

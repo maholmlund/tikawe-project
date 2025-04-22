@@ -1,9 +1,11 @@
-{% extends 'base.html' %} {% block title %}New post{% endblock %} {% block
-content %}
+{% extends 'base.html' %}
+{% block title %}New post{% endblock %}
+
+{% block content %}
 <h1 class="page-title-left">Create new post</h1>
 <form method="POST" action="/post">
   <textarea name="data" id="data" rows="10" maxlength="1000" spellcheck="false"
-    class="code-section">{{postform.data}}</textarea>
+    class="code-section">{{ postform.data }}</textarea>
   <br />
   {% for l in languages %} <input type="radio" id="language-{{ l }}" name="language" value="{{ l }}"
     class="language-radio" {% if l==postform.language %} checked {% endif %} />

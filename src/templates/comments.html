@@ -1,5 +1,7 @@
-{% extends 'base.html' %} {% block title %}Comments{% endblock %} {% block
-content %}
+{% extends 'base.html' %}
+{% block title %}Comments{% endblock %} 
+
+{% block content %}
 <h1 class="page-title-center">Post:</h1>
 {% include 'snippet.html' %}
 <hr />
@@ -11,8 +13,14 @@ content %}
     <button class="basic-button">Submit</button>
   </form>
   {% for msg in get_flashed_messages(category_filter=["error"]) %}
-  <p class="error_msg">Error: {{msg}}</p>
+  <p class="error_msg">Error: {{ msg }}</p>
   {% endfor %}
 </div>
-{% endif %} {% for comment in comments %} {% include 'comment.html' %} {% endfor
-%} {% include 'pager.html' %} {% endblock %}
+{% endif %}
+
+{% for comment in comments %}
+{% include 'comment.html' %}
+{% endfor%}
+
+{% include 'pager.html' %}
+{% endblock %}

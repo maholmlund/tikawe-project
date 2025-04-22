@@ -26,7 +26,7 @@
         <button class="basic-button">Log Out</button>
       </form>
       <a href="/post" class="basic-button">New post</a>
-      <a href="/user/{{g.user.username}}" class="basic-button">{{g.user.username}}</a>
+      <a href="/user/{{g.user.username}}" class="basic-button">{{ g.user.username }}</a>
       {% else %}
       <a href="/login" class="basic-button">Log in</a>
       <a href="/register" class="basic-button">Create new user</a>

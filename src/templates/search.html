@@ -1,4 +1,11 @@
-{% extends 'base.html' %} {% block title %}Search results{% endblock %} {% block
-content %}
+{% extends 'base.html' %}
+{% block title %}Search results{% endblock %}
+
+{% block content %}
 <h1 class="page-title-center">Search results</h1>
-{% for post in posts %} {% include 'snippet.html' %} {% endfor %} {% include 'pager.html' %} {% endblock %}
+{% for post in posts %}
+{% include 'snippet.html' %}
+{% endfor %}
+
+{% include 'pager.html' %}
+{% endblock %}

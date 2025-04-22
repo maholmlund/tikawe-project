@@ -1,5 +1,5 @@
-import flask
 from flask import flash
+
 from db import Db
 
 
@@ -11,7 +11,7 @@ class RegistrationForm:
 
     def validate(self):
         valid = True
-        if len(self.username) < 4:
+        if len(self.username.strip()) < 4:
             flash("username too short", "error")
             valid = False
         if len(self.password1) < 4:
@@ -43,7 +43,8 @@ class PostForm:
         if Db().get_language_id(self.language) is None:
             flash("invalid language", "error")
             valid = False
-        # apparently some browsers count the number of characters in a text area differently so we put a higher limit here
+        # apparently some browsers count the number of characters in a
+        # text area differently so we put a higher limit here
         if len(self.data) > 3000 or self.data.count("\n") > 30:
             flash("code too long", "error")
             valid = False
@@ -51,12 +52,6 @@ class PostForm:
             flash("empty code not allowed", "error")
             valid = False
         return valid
-
-
-class LikeForm:
-    def __init__(self, form):
-        self.next = form["next"] if "next" in form else "/"
-        self.query = "?" + form["query"] if "query" in form else ""
 
 
 class CommentForm:

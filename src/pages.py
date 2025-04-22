@@ -1,19 +1,27 @@
-from sqlite3 import IntegrityError
-from functools import wraps
 from math import ceil
-import markupsafe
-from flask import Flask, request, redirect, session, g, abort, flash
-from flask import render_template, url_for
-from werkzeug.security import check_password_hash, generate_password_hash
-from db import Db
-from forms import RegistrationForm, LoginForm, PostForm, LikeForm, CommentForm
-import config
+from functools import wraps
 from secrets import token_hex
+
+import markupsafe
+from flask import Flask, request, redirect, session, g, abort, flash, render_template, url_for
+from werkzeug.security import check_password_hash, generate_password_hash
+
+import config
+from db import Db
+from forms import RegistrationForm, LoginForm, PostForm, CommentForm
+
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
 
 ITEMS_PER_PAGE = 20
+
+
+# ----------------------------------
+# |                                |
+# |  Helper functions and classes  |
+# |                                |
+# ----------------------------------
 
 
 @app.template_filter()
@@ -58,12 +66,14 @@ def check_csrf():
 
 @app.before_request
 def add_next_page():
-    if not request.path.startswith("/static") and request.method == "GET" and not request.path.startswith("/favicon"):
+    if (not request.path.startswith("/static") and
+        request.method == "GET" and
+            not request.path.startswith("/favicon")):
         session["next_page"] = request.referrer
 
 
 @app.after_request
-def add_header(r):
+def disable_caching(r):
     r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
     r.headers["Pragma"] = "no-cache"
     r.headers["Expires"] = "0"
@@ -78,24 +88,32 @@ class Pager:
         if current_page > self.n_pages:
             abort(404)
         self.current = current_page
-        self.next_page_link = None
         if len(query) != 0:
             query = "?" + query
+        self.next_page_link = None
+        self.prev_page_link = None
         if current_page < self.n_pages:
             self.next_page_link = link_base + str(current_page + 1) + query
-        self.prev_page_link = None
         if current_page > 1:
             self.prev_page_link = link_base + str(current_page - 1) + query
+
+
+# --------------------
+# |                  |
+# |  Route handlers  |
+# |                  |
+# --------------------
 
 
 @app.route("/", methods=["GET"])
 @app.route("/<int:page_id>", methods=["GET"])
 def index(page_id=1):
     pager = Pager(Db().get_post_count(), page_id, "/")
+    offset = (page_id - 1) * ITEMS_PER_PAGE
     if g.user:
-        posts = Db().get_posts(ITEMS_PER_PAGE, (page_id - 1) * ITEMS_PER_PAGE, g.user.id)
+        posts = Db().get_posts(ITEMS_PER_PAGE, offset, g.user.id)
     else:
-        posts = Db().get_posts(ITEMS_PER_PAGE, (page_id - 1) * ITEMS_PER_PAGE)
+        posts = Db().get_posts(ITEMS_PER_PAGE, offset)
     return render_template("index.html", posts=posts, request=request, pager=pager)
 
 
@@ -106,12 +124,10 @@ def login():
         user = Db().get_user_by_username(form.username)
         if user and check_password_hash(user.pwd_hash, form.password):
             session["username"] = user.username
-            if "next_page" not in session or session["next_page"].endswith("/register"):
+            if session["next_page"].endswith("/register"):
                 return redirect("/")
-            else:
-                return redirect(session["next_page"])
-        else:
-            flash("username and password do not match", "error")
+            return redirect(session["next_page"])
+        flash("username and password do not match", "error")
     return render_template("login.html", loginform=form)
 
 
@@ -141,9 +157,7 @@ def post():
         if form.validate():
             language_id = Db().get_language_id(form.language)
             Db().create_post(form.data, language_id, g.user.id)
-            if "next_page" in session:
-                return redirect(session["next_page"])
-            return redirect("/")
+            return redirect(session["next_page"])
     return render_template("post.html", postform=form, languages=Db().get_languages())
 
 
@@ -172,12 +186,13 @@ def edit(post_id):
 @app.route("/delete/<post_id>", methods=["POST"])
 @login_required
 def delete(post_id):
-    post = Db().get_post_by_id(post_id)
-    if not post:
+    target_post = Db().get_post_by_id(post_id)
+    if not target_post:
         abort(404)
-    if post.username != g.user.username:
+    if target_post.username != g.user.username:
         return "invalid user", 403
     Db().delete_post_by_id(post_id)
+    # do not redirect to a page which does not exist
     if request.referrer.endswith(f"comments/{post_id}"):
         return redirect("/")
     return redirect(request.referrer)
@@ -189,13 +204,14 @@ def search(page_id=1):
     term = request.args.get("query")
     query = request.query_string.decode("utf-8")
     pager = Pager(Db().get_search_match_count(
-        term), page_id, f"/search/", query)
+        term), page_id, "/search/", query)
+    offset = (page_id - 1) * ITEMS_PER_PAGE
     if g.user:
         posts = Db().search_post_by_string(
-            term, ITEMS_PER_PAGE, (page_id - 1) * ITEMS_PER_PAGE, g.user.id)
+            term, ITEMS_PER_PAGE, offset, g.user.id)
     else:
         posts = Db().search_post_by_string(
-            term, ITEMS_PER_PAGE, (page_id - 1) * ITEMS_PER_PAGE)
+            term, ITEMS_PER_PAGE, offset)
     return render_template("search.html",
                            posts=posts,
                            request=request,
@@ -206,7 +222,6 @@ def search(page_id=1):
 @app.route("/like/<post_id>", methods=["POST"])
 @login_required
 def like(post_id):
-    form = LikeForm(request.form)
     if not Db().get_post_by_id(post_id):
         abort(404)
     Db().toggle_like(post_id, g.user.id)
@@ -222,16 +237,16 @@ def comments(post_id, page_id=1):
         abort(404)
     pager = Pager(Db().get_comment_count(post_id),
                   page_id, f"/comments/{post_id}/")
-    comments = Db().get_comments(post_id, ITEMS_PER_PAGE, (page_id - 1) * ITEMS_PER_PAGE)
+    offset = (page_id - 1) * ITEMS_PER_PAGE
+    post_comments = Db().get_comments(post_id, ITEMS_PER_PAGE, offset)
     form = CommentForm(request.form)
     if g.user:
-        post = Db().get_post_by_id(
-            post_id, g.user.id)
+        target_post = Db().get_post_by_id(post_id, g.user.id)
     else:
-        post = Db().get_post_by_id(post_id)
+        target_post = Db().get_post_by_id(post_id)
     return render_template("comments.html",
-                           post=post,
-                           comments=comments,
+                           post=target_post,
+                           comments=post_comments,
                            commentform=form,
                            pager=pager,
                            hide_link=True)
@@ -256,19 +271,15 @@ def user_page(username, page_id=1):
         abort(404)
     post_count = Db().get_user_post_count(target_user.id)
     pager = Pager(post_count, page_id, f"/user/{username}/")
+    offset = (page_id - 1) * ITEMS_PER_PAGE
     if "username" in session:
         posts = Db().get_posts_by_user_id(
             target_user.id,
             ITEMS_PER_PAGE,
-            (page_id - 1) * ITEMS_PER_PAGE,
+            offset,
             current_user_id=g.user.id)
-        return render_template("user.html",
-                               target_user=username,
-                               post_count=post_count,
-                               pager=pager,
-                               posts=posts)
-    posts = Db().get_posts_by_user_id(target_user.id,
-                                      ITEMS_PER_PAGE, (page_id - 1) * ITEMS_PER_PAGE)
+    else:
+        posts = Db().get_posts_by_user_id(target_user.id, ITEMS_PER_PAGE, offset)
     return render_template("user.html",
                            target_user=username,
                            post_count=post_count,
