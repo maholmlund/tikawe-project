@@ -38,7 +38,7 @@ class PostForm:
         if Db().get_language_id(self.language) is None:
             self.errors.append("invalid language")
         # apparently some browsers count the number of characters in a text area differently so we put a higher limit here
-        if len(self.data) > 3000:
+        if len(self.data) > 3000 or self.data.count("\n") > 30:
             self.errors.append("code too long")
         if len(self.data.strip()) == 0:
             self.errors.append("empty code not allowed")
