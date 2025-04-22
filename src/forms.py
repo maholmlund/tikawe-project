@@ -25,7 +25,6 @@ class LoginForm:
     def __init__(self, form):
         self.username = form["username"] if "username" in form else ""
         self.password = form["password"] if "password" in form else ""
-        self.next = form["next"] if "next" in form else "/"
         self.errors = []
 
 

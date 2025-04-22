@@ -32,10 +32,6 @@
         {% else %}
         <form action="/login" method="GET" class="like-form">
           {% endif %}
-          <input type="hidden" name="next" value="{{ request.path }}" />
-          {% if query %}
-          <input type="hidden" name="query" value="{{ query }}" />
-          {% endif %}
           <button class="like-button">
             <p>{{ post.likes }}</p>
             {% if post.liked %}

@@ -21,9 +21,6 @@
       </th>
     </tr>
   </table>
-  {% if next %}
-  <input type="hidden" name="next" value="{{ next }}" />
-  {% endif %}
   <input type="hidden" name="csrf_token" value="{{session.csrf_token}}" />
   <button type="submit" class="basic-button">Login</button>
 </form>

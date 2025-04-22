@@ -56,6 +56,12 @@ def check_csrf():
             abort(403)
 
 
+@app.before_request
+def add_next_page():
+    if not request.path.startswith("/static") and request.method == "GET" and not request.path.startswith("/favicon"):
+        session["next_page"] = request.referrer
+
+
 @app.after_request
 def add_header(r):
     r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
@@ -100,7 +106,10 @@ def login():
         user = Db().get_user_by_username(form.username)
         if user and check_password_hash(user.pwd_hash, form.password):
             session["username"] = user.username
-            return redirect(form.next)
+            if session["next_page"]:
+                return redirect(session["next_page"])
+            else:
+                return redirect("/")
         else:
             form.errors.append("username and password do not match")
     next_url = request.args.get("next")
@@ -152,7 +161,7 @@ def edit(post_id):
         if form.validate():
             language_id = Db().get_language_id(form.language)
             Db().update_post_by_id(post_id, form.data, language_id)
-            return redirect("/")
+            return redirect(session["next_page"])
     languages = Db().get_languages()
     form.data = target_post.data
     form.language = target_post.language
@@ -170,7 +179,7 @@ def delete(post_id):
     if post.username != g.user.username:
         return "invalid user", 403
     Db().delete_post_by_id(post_id)
-    return redirect("/")
+    return redirect(request.referrer)
 
 
 @app.route("/search", methods=["GET"])
@@ -201,7 +210,7 @@ def like(post_id):
         abort(404)
     Db().toggle_like(post_id, g.user.id)
     # I wish we could do this using javascript...
-    return redirect(form.next + form.query + f"#post-{post_id}")
+    return redirect(request.referrer + f"#post-{post_id}")
 
 
 @app.route("/comments/<post_id>", methods=["GET"])
