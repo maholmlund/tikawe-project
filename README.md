@@ -33,6 +33,14 @@ Suorita sovellus:
 $ flask --app src/pages.py run
 ```
 
-Tietokannan alustus luo järjestelmään valmiiksi suuren määrän käyttäjiä, postauksia, tykkäyksiä ja kommentteja. Tietokannan alustuksessa voi kestää yli minuutti heikoimmilla koneilla. Kaikkien käyttäjäien käyttäjänimet ovat muotoa userX ja salasana "salasana".
+## Suuri tietomäärä
+
+Tietokannan voi alustaa suurella määrällä tietoa suorittamalla:
+```
+$ python3 seed.py
+```
+Tietokannan alustus luo järjestelmään valmiiksi suuren määrän käyttäjiä, postauksia, tykkäyksiä ja kommentteja. Tietokannan alustuksessa voi kestää yli minuutti heikoimmilla koneilla. Kaikkien käyttäjien käyttäjänimet ovat muotoa userX ja salasana "salasana".
+
+Sovellus toimii sujuvasti myös suurella tietomäärällä. Sivujen latausaika kuitenkin kasvaa mitä suurempaa sivunumeroa haetaan (ensimmäiset sivut latautuvat välittömästi).
 
 SVG-kuvat: [tablericons.com](https://tablericons.com)
