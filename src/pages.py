@@ -179,6 +179,8 @@ def delete(post_id):
     if post.username != g.user.username:
         return "invalid user", 403
     Db().delete_post_by_id(post_id)
+    if request.referrer.endswith(f"comments/{post_id}"):
+        return redirect("/")
     return redirect(request.referrer)
 
 
