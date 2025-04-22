@@ -83,6 +83,7 @@ class Db:
             LEFT JOIN Likes T ON T.post_id = P.id \
             LEFT JOIN Likes Z ON P.id = Z.post_id AND Z.user_id = ? \
             GROUP BY P.id \
+            ORDER BY P.id DESC \
             LIMIT ?\
             OFFSET ?"""
             results = self.con.execute(
@@ -96,6 +97,7 @@ class Db:
             LEFT JOIN Languages L ON L.id = P.language \
             LEFT JOIN Likes T ON T.post_id = P.id \
             GROUP BY P.id \
+            ORDER BY P.id DESC \
             LIMIT ?\
             OFFSET ?"""
             results = self.con.execute(query, [limit, offset]).fetchall()
@@ -137,6 +139,7 @@ class Db:
             LEFT JOIN Likes Z ON P.id = Z.post_id AND Z.user_id = ?
             WHERE U.id = ? \
             GROUP BY P.id \
+            ORDER BY P.id DESC \
             LIMIT ?\
             OFFSET ?"""
             results = self.con.execute(
@@ -151,6 +154,7 @@ class Db:
             LEFT JOIN Likes T ON T.post_id = P.id \
             WHERE U.id = ?
             GROUP BY P.id \
+            ORDER BY P.id DESC \
             LIMIT ?\
             OFFSET ?"""
             results = self.con.execute(
@@ -186,6 +190,7 @@ class Db:
             LEFT JOIN Likes Z ON P.id = Z.post_id AND Z.user_id = ?
             WHERE LOWER(P.data) LIKE ? \
             GROUP BY P.id \
+            ORDER BY P.id DESC \
             LIMIT ?\
             OFFSET ?"""
             results = self.con.execute(
@@ -200,6 +205,7 @@ class Db:
             LEFT JOIN Likes T ON T.post_id = P.id \
             WHERE LOWER(P.data) LIKE ? \
             GROUP BY P.id \
+            ORDER BY P.id DESC \
             LIMIT ?\
             OFFSET ?"""
             results = self.con.execute(
@@ -240,6 +246,7 @@ class Db:
         query = """SELECT C.data, C.id, U.name
                    FROM Comments C, Posts P, Users U
                    WHERE P.id = C.post_id AND U.id = C.user_id AND P.id = ?
+                   ORDER BY C.id DESC
                    LIMIT ? OFFSET ?"""
         results = self.con.execute(query, [post_id, limit, offset]).fetchall()
         comments = [Comment(x[0], x[1], x[2]) for x in results]
