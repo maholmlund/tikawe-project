@@ -106,10 +106,10 @@ def login():
         user = Db().get_user_by_username(form.username)
         if user and check_password_hash(user.pwd_hash, form.password):
             session["username"] = user.username
-            if session["next_page"]:
-                return redirect(session["next_page"])
-            else:
+            if "next_page" not in session or session["next_page"].endswith("/register"):
                 return redirect("/")
+            else:
+                return redirect(session["next_page"])
         else:
             flash("username and password do not match", "error")
     return render_template("login.html", loginform=form)
@@ -128,7 +128,8 @@ def register():
     if request.method == "POST":
         if form.validate():
             Db().create_user(form.username, generate_password_hash(form.password1))
-            return redirect("/")
+            flash("user created, please log in", "info")
+            return redirect("/login")
     return render_template("register.html", registrationform=form)
 
 

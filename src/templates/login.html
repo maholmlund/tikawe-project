@@ -1,6 +1,9 @@
 {% extends 'base.html' %} {% block title %}Login{% endblock %} {% block content
 %}
 <h1 class="page-title-left">Login</h1>
+{% for msg in get_flashed_messages(category_filter=["info"]) %}
+<p class="info-msg">Info: {{ msg }}</p>
+{% endfor %}
 <form method="POST" action="/login">
   <table class="form-table">
     <tr>

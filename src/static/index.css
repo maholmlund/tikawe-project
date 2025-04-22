@@ -193,3 +193,11 @@ nav {
   margin: 0.4em;
   border-radius: 0.2em;
 }
+
+.info-msg {
+  display: block;
+  background-color: rgb(77, 168, 253);
+  padding: 0.4em;
+  margin: 0.4em;
+  border-radius: 0.2em;
+}
