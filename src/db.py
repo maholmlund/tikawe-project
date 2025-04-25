@@ -45,7 +45,7 @@ class Db:
         self.con.execute("PRAGMA foreign_keys = ON")
 
     def get_user_by_username(self, username):
-        query = "SELECT * FROM Users WHERE name=?"
+        query = "SELECT id, name, pwd_hash FROM Users WHERE name=?"
         values = self.con.execute(query, [username]).fetchone()
         if values:
             return User(values[1], values[2], values[0])
