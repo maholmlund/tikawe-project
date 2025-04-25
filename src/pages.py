@@ -201,7 +201,7 @@ def delete(post_id):
 @app.route("/search", methods=["GET"])
 @app.route("/search/<int:page_id>", methods=["GET"])
 def search(page_id=1):
-    term = request.args.get("query")
+    term = request.args.get("query") if "query" in request.args else ""
     query = request.query_string.decode("utf-8")
     pager = Pager(Db().get_search_match_count(
         term), page_id, "/search/", query)
